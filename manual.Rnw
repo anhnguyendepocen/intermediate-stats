@@ -1,0 +1,354 @@
+
+\documentclass[12pt]{article}
+
+<<eval=FALSE,echo=FALSE>>=
+##Make sure these packages are installed before trying to compile
+install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm"))
+source("http://www.bioconductor.org/biocLite.R")
+biocLite("BiocStyle")
+@
+
+
+
+<<knitr, echo=FALSE, results="hide">>=
+library("knitr")
+opts_chunk$set(tidy=FALSE,dev="png",fig.show="as.is",
+               fig.width=10,fig.height=6,
+               message=FALSE,eval=TRUE,warning=FALSE,echo=TRUE)
+@ 
+
+<<style, eval=TRUE, echo=F, results="asis">>=
+BiocStyle::latex()
+@
+\usepackage{ifthen} 
+\usepackage{xcolor,colortbl}
+\newboolean{includethis} 
+\setboolean{includethis}{true} 
+\newcommand{\ifinclude}[1]{\ifthenelse{\boolean{includethis}}{#1}{}} 
+
+
+
+\title{Further Statistical Analysis using R}
+\author{Mark Dunning, Matt Eldridge and Sarah Vowler \thanks{Acknowledgements: Sarah Dawson}}
+\date{Last Document revision: \today}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Statistics Introduction}
+
+\centerline{\includegraphics[width=4cm,height=4cm]{images/fisher.jpg}}
+
+\textit{"To consult the statistician after an experiment is finished is often merely to ask him to conduct a post mortem examination. He can perhaps say what the experiment died of."}. R.A. Fisher, 1938\\
+
+
+The goals of statistical methods could be summarised as follows:
+\begin{itemize}
+\item{drawing conclusions about a population by analysing data on just a sample;}
+\item{evaluating the uncertainty in these conclusions; and,}
+\item{designing the sampling approach so that valid and accurate conclusions can be made from the data collected.}
+\end{itemize}
+
+\section{R Introduction}
+
+To install R visit \href{www.r-project.org}{\color{blue}{www.r-project.org}}. In the 'Getting Started' box half-way down the page follow the 'download R' link. Scroll down to the UK and select any one of the three links. On the next page choose the appropriate operating system for your computer from the three 'Download R for...' options. 
+
+\begin{figure}
+\centering
+\includegraphics[width=12cm,height=6cm]{images/downloadR.png}
+\caption{R can be downloaded from the \href{www.r-project.org}{\color{blue}{R-project}} web page}
+\end{figure}
+
+\subsection{Installation of R}
+After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is \Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
+
+\subsection{Installation of RStudio}
+To install RStudio visit \href{http://www.rstudio.com/products/RStudio/}{\color{blue}{http://www.rstudio.com/products/RStudio/}} and follow the links to download {\tt RStudio Desktop} for your operating system.
+
+
+This manual, and the accompanying practical will assume some famililarity with the R statistical language. In particular, you should be familiar with the following concepts:
+
+\begin{itemize}
+\item{Using the RStudio program}
+\item{Setting your working directory}
+\item{Creating variables and basic object types; in particular vectors and data frames}
+\item{Using built-in R functions}
+\item{Using R to get help on functions}
+\item{Subset operations for vectors and data frames using the [] notation}
+\item{Reading tabular data into R}
+\item{Basic plots; scatter plots, boxplot and histogram}
+\end{itemize}
+
+Several Online videos are available that cover this materials. For example
+
+\begin{itemize}
+\item{\href{http://shop.oreilly.com/product/0636920034834.do}{\color{blue}{http://shop.oreilly.com/product/0636920034834.do}}}
+\item{\href{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}{\color{blue}{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}}}
+\item{\href{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}{\color{blue}{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}}}
+\end{itemize}
+
+
+
+
+\subsection{Statistical Tests}
+
+The statistical approach used is dependent on the data type. In this document we will describe \textbf{ANOVA} (analysis of variance), which can be used when we have two or more groups of continuous numerical data, and \textbf{Linear Regression}
+
+\subsection{Exploratory Analysis}
+Before conducting a formal analysis of our data, it is always a good idea to run some exploratory checks of the data: 
+\begin{itemize}
+\item{To check that the data has been read in or entered correctly; }
+\item{To identify any outlying values and if there is reason to question their validity, exclude them or investigate them further; }
+\item{To see the distribution of the observations and whether the planned analyses are appropriate.}
+\end{itemize}
+It's always a good idea to calculate some summary statistics for your data, such as the mean and standard deviation, or the median and inter-quartile range if your data is skewed. You should also consider whether there may be outliers in your data (but do not remove them from the analysis without good reason) or whether there may be missing data. Summary statistics were covered in detail in Part 1 of the course.
+
+\subsection{Statistical Tests - basic setup}
+
+There are four key steps in every statistical test:
+\begin{itemize}
+\item{1 Formulate a \textbf{null hypothesis}, H$_0$. This is the working hypothesis that we wish to disprove.}
+\item{2. Under the assumption that the \textbf{null hypothesis} is true, calculate a \textbf{test statistic} from the data.}
+\item{3. Determine whether the \textbf{test statistic} is more extreme than we would expect under the \textbf{null hypothesis}, i.e. look at the \textbf{p-value}.}
+\item{4. Reject or do not reject the \textbf{null hypothesis}.}
+\end{itemize}
+As the name suggests, the null hypothesis typically corresponds to a \textbf{null} effect. 
+
+For example, there is \textbf{no difference} in the measurements in group 1 compared with group 2. A small p-value indicates that the probability of observing such a test statistic as small under the assumption that the null hypothesis is true. If the p-value is below a pre-specified \textbf{significance level}, then this is a \textbf{significant result} and, we would conclude, there is evidence to reject the null hypothesis.
+
+The \textbf{significance level} is most commonly set at 5\% and may also be thought of as the \textbf{false positive rate}. That is, there is a 5\% chance that the null hypothesis is true for data-sets with test statistics corresponding to p-values of less than 0.05 – i.e. we may wrongly reject the null hypothesis when the null hypothesis is true (false positive).
+
+<<echo=FALSE,fig.show='asis',fig.height=5,fig.width=10,warning=FALSE,message=FALSE>>=
+
+library(ggplot2)
+x     = rnorm(10000, 0, 1)
+sd <- sd(x)
+me <- mean(x)
+
+dat <- data.frame(x=x)
+rects <- data.frame(xstart = c(-1.96,1.96), xend = c(-Inf,Inf),col=c("A","A"))
+
+normdist <- ggplot() +   geom_histogram(data = dat, aes(x))+  geom_rect(data = rects, aes(xmin = xstart, xmax = xend, ymin = -Inf, ymax = Inf),alpha=0.4,fill="yellow") + ylab("") + xlab("") + theme(legend.position="none")
+            
+normdist
+@
+
+Equally, we may make \textbf{false negative} conclusions from statistical tests. In other words, we may not reject the null hypothesis when the null hypothesis is, in fact, not true. When referring to the false negative rate, statisticians usually refer to \textbf{power}, which is 1-false negative rate. 
+
+The \textbf{power} of a statistical test will depend on:
+
+\begin{itemize}
+\item{The \textbf{significance level} - a 5\% test of significance will have a greater chance of rejecting the null than a 1\% test because the strength of evidence required for rejection is less.}
+\item{The \textbf{sample size} – the larger the sample size, the more accurate our estimates (e.g. of the mean) which means we can differentiate between the null and alternative hypotheses more clearly.}
+\item{The \textbf{size of the difference or effect} we wish to detect – bigger differences (i.e. alternative hypotheses) are easier to detect than smaller differences.}
+\item{The \textbf{variability}, or standard deviation, of the observations – the more variable our observations, the less accurate our estimates which means it is more difficult to differentiate between the null and alternative hypotheses.}
+\end{itemize}
+
+
+\begin{table}[h]
+
+\centering
+
+\begin{tabular}{| l | l | l|}
+   \hline
+  & \textbf{Null hypothesis does not hold} &\textbf{Null hypothesis holds} \\
+  \hline
+  \textbf{Reject null hypothesis} & {\cellcolor{Orchid}Correct \textit{True Positive}} & {\cellcolor{CadetBlue}Wrong \textit{False positive}} \\
+  \textbf{Do no reject null hypothesis} & {\cellcolor{CadetBlue}Wrong \textit{False negative}} & {\cellcolor{Orchid}Correct \textit{True negative}} \\
+  \hline
+\end{tabular}
+\caption{Error definitions}
+\label{errors}
+\end{table}
+
+
+\section{ANOVA}
+
+ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are three main types of ANOVA: one-way, two-way and repeated measures. In this course our main focus will be on the one-way ANOVA.
+
+\subsection{One-way ANOVA}
+
+The two-sample t-test is useful when we have just two groups of continuous data to compare, but when we want to compare more than two groups a one-way ANOVA can be used to simultaneously compare all groups rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
+
+A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance}(see Table \ref{anova-table}). 
+
+\begin{table}[h]
+
+\centering
+
+\begin{tabular}{| l | l | l|l|l|}
+\hline
+\textbf{Source of Variation} & \textbf{Degrees of Freedom} & \textbf{Sum of Squares} & \textbf{Mean Squares} & $F_{k-1,N-k}$ \\
+\hline
+Between groups & $k - 1$ &  $BSS = \sum_{k}^{i=1} n_iy^2_i - \frac{T^2}{N}$ & $S^2_B = \frac{BSS}{k -1}$ & \\
+\hline
+Within groups & $N - k$ & $WSS = S - \sum_{i=1}^{k} n_iy^2_i $ & $S^2_W = \frac{WSS}{N-k}$ & \\
+\hline
+Total & $N - 1 $ & TSS = BSS + WSS & & $\frac{S^2_B}{S^2_W}$\\
+\hline
+\end{tabular}
+\caption{One-way ANOVA table}
+\label{anova-table}
+\end{table}
+
+The between group variance is divided by the within group variance to give an F statistic. This tells us the ratio of between group variation to within group variation. A large F-value implies that there are significant differences between groups and conversely a small F-value implies there are not significant differences between groups. Giving this a little bit of thought, the idea becomes more intuitive:
+
+\begin{itemize}
+\item{If the variance within groups is small, but between groups the variance is very large, we can infer that there are likely to be differences between groups. Following this theory, the F statistic is calculated by dividing the between group variation by the within group variation. So in this scenario, we divide a large number by a comparatively small number and this leaves us with a large(ish) number for our F statistic, corresponding to a small p-value.}
+\item{If the variance within groups is large, but between groups the variance is also large, it is more difficult to know whether the groups truly differ in their mean value. In this scenario, the F statistic is calculated by dividing a large number by another large number - depending on the relative size of these two large numbers we may be left with a large or small number for our F statistic. The same is true when the variance within and between groups are both small.}
+\item{Finally, if the variance within group is large, but between groups the variance is very small, we can infer that there are unlikely to be differences between groups. In this scenario, the F statistic is calculated by dividing a small number by a large number and this will result in a small(ish) number for our F statistic, corresponding to a large p-value.}
+\end{itemize}
+Luckily, you won’t need to do the calculations from Table \ref{anova-table} by hand as R will do these all for you, but it’s good to have an appreciation of what the test is actually doing in the background.
+
+Obviously the outcome of the one-way ANOVA depends on the data available. If there is high variation in the data, a much larger sample will be needed to detect a difference between groups. Likewise, if we are interested in detecting very small differences between groups a larger sample size will be required. 
+
+There are several assumptions behind the one-way ANOVA:
+
+\begin{itemize}
+\item{Normally distributed response (assessed for each group separately)}
+\item{Approximately equal variance across the groups}
+\item{Independent observations}
+\end{itemize}
+The main assumption is that the distribution of the response variable should be normally distributed for each group being compared. This can be assessed prior to fitting the ANOVA by constructing a histogram of the response variable for each group being compared. This can also be assessed after fitting the ANOVA by constructing a normal probability plot of the residuals (sometimes called a Q-Q plot).
+
+Another important assumption is that there is approximately equal variance across the groups being compared. This assumption is important because of the way the F-test in the ANOVA uses the pooled variance across groups. If one group has a much larger variance than another group, the results of the F-test may not be valid. The equal variance assumption can be assessed using either Bartlett's or Levene's test (REMEMBER! this adds to the multiple testing problem), or visually using a histogram plotted separately for each group. 
+
+A third assumption of the one-way ANOVA is the independence of observations. There is no easy way of assessing independence, so a lot of people overlook this assumption. However, a little thought about where the data comes from and how it was collected can give us a good indication of whether the observations are independent or not. Things like taking observations from related individuals or having multiple measurements per subject will cause the independence assumption to be invalid.
+
+If the F-test provides a significant result, we may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the effect size. This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing and GraphPad Prism has several built-in options to do this. There are several different types of multiple-testing adjustment than can be made, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-test}.  
+
+\subsection{Choosing the correct post-test}
+\label{choosing-the-correct-post-test}
+
+\begin{table}[h]
+
+\centering
+
+\begin{tabular}{| l | l|}
+\hline
+Tukey & Compare all pairs of columns \\
+\hline
+Bonferroni & Compare all pairs of columns OR compare selected pairs of columns \\
+\hline
+Dunnett & Compare all columns vs. control column \\
+\hline
+Trend test & Test for linear trend between mean and column number \\
+\hline 
+\end{tabular}
+\caption{Multiple-testing adjustment methods}
+\label{post-test}
+\end{table}
+
+\subsection{One-way ANOVA Example}
+
+Example: The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}
+
+
+<<echo=FALSE,results='asis'>>=
+protdata <- read.csv("protein-expression.csv")
+library(xtable)
+xtable(protdata,label = "protdata",caption = "Protein Expression data")
+@
+
+Our \textbf{null hypothesis} is that the mean value is the same in each of the five groups.
+
+Our \textbf{alternative hypothesis} is that the mean value is different in one or more of the five groups.
+
+These data can be read using the \Rfunction{read.csv} function in R, which will create a \textit{data frame} representation. 
+<<>>=
+proteinData <- read.csv("protein-expression.csv")
+@
+
+At this point, it is a good idea to inspect the data to make sure they have been imported correctly. Sometimes R will read data without complaint, but create an object that you can't actually use for analysis. If you are using RStudio, the command \Rcode{View(proteinData)} will bring-up a display of the dataset. Otherwise the following commands will tell you about the dimensions of the data, first few lines and numerical summary of each column.
+
+<<>>=
+head(proteinData)
+dim(proteinData)
+summary(proteinData)
+@
+
+A boxplot of these data can be created using the \Rfunction{boxplot} function, which allows us to compare the median and inter-quartile range (IQR) of each cell type. Optionally, we can use the \CRANpkg{beeswarm} package to overlay individual points on the plot. See Figure \ref{fig:boxplot}
+
+<<boxplot, fig.lp="fig:",fig.cap="Boxplot of the protein expression levels for five cell types">>=
+library(beeswarm)
+library(RColorBrewer)
+boxplot(proteinData,xlab="Cell Type",ylab="Protein Expression",main="Protein Expression")
+beeswarm(proteinData, add=TRUE,pch=16,col=brewer.pal(5,"Set1"),method="swarm")
+@
+
+\bioccomment{The \CRANpkg{RColorBrewer} package is also used to define a colour pallette for the dataset.}
+
+Figure \ref{fig:boxplot} shows us that the median value varies between the five groups. We can also see that the data is skewed for cell types A and D, as the bar in the middle, which shows the median, is not equally between the two outer bars, which show the lower and upper quartiles. In addition, there are extreme values present for cell types C and D. We can also see that protein expression levels in some groups are much more variable than in others; the protein expression levels in group B are very consistent, but for groups C, D and E they are much more varied. 
+
+
+
+We can make a similar assessment of the data using a histogram (plotted separately for each group in our dataset), and in particular we can use our histograms to make an assessment of normality and constant variance which are two of the assumptions behind ANOVA. See Figure \ref{fig:hist1}
+
+<<hist1, fig.lp="fig:",fig.cap="Histogram of the protein expression levels for five cell types">>=
+par(mfrow=c(2,3))
+cols <- brewer.pal(5,"Set1")
+hist(proteinData$A,xlab="A",col=cols[1],main="")
+hist(proteinData$B,xlab="B",col=cols[2],main="")
+hist(proteinData$C,xlab="C",col=cols[3],main="")
+hist(proteinData$D,xlab="D",col=cols[4],main="")
+hist(proteinData$E,xlab="E",col=cols[5],main="")
+@
+
+\bioccomment{If you are more-familiar with programming, you could write this chunk of code with a for loop (or similar)}
+
+In its current format, the data are unsuitable for analysis using one-way ANOVA as both the normality assumption and the constant variance assumption are violated. We can sometimes overcome this issue by transforming the data, and in this case we can use a log-transformation to normalise the data (Note: you do not need to do this step if the assumptions of normality and constant variance hold). This can be carried out within R using the \Rfunction{log}
+
+<<>>=
+proteinData.ln <- log(proteinData)
+head(proteinData.ln)
+@
+
+\bioccomment{If you are not sure what the \Rfunction{log} is doing, don't forget that you can bring-up the help page: \Rcode{?log}}
+
+Hopefully the transformation will result in normally distributed data. To check this, create another histogram in the same way you did on the untransformed data (See Figure \ref{fig:hist2})
+
+<<hist2, fig.lp="fig:",fig.cap="Histogram of the natural-log-transformed protein expression levels for five cell types">>=
+par(mfrow=c(2,3))
+hist(proteinData.ln$A,xlab="A",col=cols[1],main="")
+hist(proteinData.ln$B,xlab="B",col=cols[2],main="")
+hist(proteinData.ln$C,xlab="C",col=cols[3],main="")
+hist(proteinData.ln$D,xlab="D",col=cols[4],main="")
+hist(proteinData.ln$E,xlab="E",col=cols[5],main="")
+@
+
+
+
+Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA.
+
+<<>>=
+library(reshape2)
+anovaData <- melt(proteinData.ln)
+head(anovaData)
+mod <- aov(value~ variable, data=anovaData)
+summary(aov(mod))
+@
+One of the assumptions of the one-way ANOVA, which we have already explored with our scatter plot, is that the variances in each of the five groups are approximately equal. GraphPad Prism also formally tests this assumption when carrying out a one-way ANOVA, using a Bartlett's test. The results provide a p-value indicating whether equal variance can be assumed, with a value less than 0.05 suggesting that equal variance should not be assumed. 
+
+<<>>=
+bt <- bartlett.test(value~variable,data=anovaData)
+bt
+@
+
+
+
+In this example, the p-value was \Sexpr{round(bt$p.value,3)}, so there is no evidence to suggest that the variances in each of the five groups aren't approximately equal to each other. It is important to note than GraphPad Prism does not perform the Bartlett's test if any of the treatment groups have fewer than 5 observations. If the Bartlett's test gives a significant p-value, we cannot assume equal variances across the groups and a non-parametric test, such as the Kruskal-Wallis test, should be used instead of a one-way ANOVA.
+
+The equal variance assumption is reasonable in this example, so we can go ahead and use the one-way ANOVA to analyse the data. The results of the one-way ANOVA provide a p-value of $<0.0001$ which is statistically significant. This suggests that there is evidence of a difference in the mean log-transformed protein expression levels between two or more of the five cell types. As the result of the one-way ANOVA was significant, we may be interested in making further comparisons between pairs of groups, and we can do this with the post- test results. Note: if the one-way ANOVA result had not been significant we would usually stop here and not look at the post-test results.
+
+<<>>=
+post.tests<- TukeyHSD(mod)
+post.tests
+@
+
+
+The post-tests are actually just unpaired t-tests, but the results reported are adjusted for multiple testing. In this example, we want to compare all pairs of groups, but sometimes there may be specific groups that you wish to compare. You should plan your comparisons before starting your analysis and it is better, at least from a statistical angle, to perform the least number of comparisons that will sufficiently answer your question(s). As we want to perform more than one t-test on this data (in fact we are performing 10 pairwise comparisons!), we must be careful to adjust for multiple testing. Here we see that there is a significant difference between cell types A v D (p value: \Sexpr{post.tests$variable["D-A","p adj"]}), a very significant difference between cell types B v E (p value: \Sexpr{post.tests$variable["E-B","p adj"]}) and C v D (p value: \Sexpr{post.tests$variable["D-C","p adj"]}), and an extremely significant difference between cell types B v D (p value: \Sexpr{post.tests$variable["D-B","p adj"]}). 
+
+Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$variable["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$variable["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$variable["B-A","diff"],3)),3)}$.
+
+\end{document}
