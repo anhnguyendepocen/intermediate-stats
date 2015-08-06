@@ -418,5 +418,40 @@ plot(Score~Drugs,data=lsd)
 abline(mod)
 @
 
+\subsubsection{Wellbeing}
+
+http://prcweb.co.uk/lab/what-makes-us-happy/
+
+<<>>=
+library(UsingR)
+data("wellbeing")
+head(wellbeing)
+mod <- lm(Well.being ~ GDP,data=wellbeing)
+summary(mod)
+par(mfrow=c(2,2))
+plot(mod)
+@
+
+<<>>=
+plot(wellbeing[,c(3,2)])
+abline(mod)
+@
+
+\subsubsection{Chick Weights}
+
+Newly hatched chicks were randomly allocated into six groups, and each group was given a different feed supplement. Their weights in grams after six weeks are given along with feed types.
+
+<<>>=
+require(stats); require(graphics)
+boxplot(weight ~ feed, data = chickwts, col = "lightgray",
+    varwidth = TRUE, notch = TRUE, main = "chickwt data",
+    ylab = "Weight at six weeks (gm)")
+anova(fm1 <- lm(weight ~ feed, data = chickwts))
+opar <- par(mfrow = c(2, 2), oma = c(0, 0, 1.1, 0),
+            mar = c(4.1, 4.1, 2.1, 1.1))
+plot(fm1)
+par(opar)
+@
+
 
 \end{document}
