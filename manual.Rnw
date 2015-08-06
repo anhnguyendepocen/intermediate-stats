@@ -50,43 +50,6 @@ The goals of statistical methods could be summarised as follows:
 \item{designing the sampling approach so that valid and accurate conclusions can be made from the data collected.}
 \end{itemize}
 
-\section{R Introduction}
-
-To install R visit \href{www.r-project.org}{\color{blue}{www.r-project.org}}. In the 'Getting Started' box half-way down the page follow the 'download R' link. Scroll down to the UK and select any one of the three links. On the next page choose the appropriate operating system for your computer from the three 'Download R for...' options. 
-
-\begin{figure}
-\centering
-\includegraphics[width=12cm,height=6cm]{images/downloadR.png}
-\caption{R can be downloaded from the \href{www.r-project.org}{\color{blue}{R-project}} web page}
-\end{figure}
-
-\subsection{Installation of R}
-After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is \Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
-
-\subsection{Installation of RStudio}
-To install RStudio visit \href{http://www.rstudio.com/products/RStudio/}{\color{blue}{http://www.rstudio.com/products/RStudio/}} and follow the links to download {\tt RStudio Desktop} for your operating system.
-
-
-This manual, and the accompanying practical will assume some famililarity with the R statistical language. In particular, you should be familiar with the following concepts:
-
-\begin{itemize}
-\item{Using the RStudio program}
-\item{Setting your working directory}
-\item{Creating variables and basic object types; in particular vectors and data frames}
-\item{Using built-in R functions}
-\item{Using R to get help on functions}
-\item{Subset operations for vectors and data frames using the [] notation}
-\item{Reading tabular data into R}
-\item{Basic plots; scatter plots, boxplot and histogram}
-\end{itemize}
-
-Several Online videos are available that cover this materials. For example
-
-\begin{itemize}
-\item{\href{http://shop.oreilly.com/product/0636920034834.do}{\color{blue}{http://shop.oreilly.com/product/0636920034834.do}}}
-\item{\href{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}{\color{blue}{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}}}
-\item{\href{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}{\color{blue}{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}}}
-\end{itemize}
 
 
 
@@ -162,6 +125,46 @@ The \textbf{power} of a statistical test will depend on:
 \label{errors}
 \end{table}
 
+\section{R Introduction}
+
+To install R visit \href{www.r-project.org}{\color{blue}{www.r-project.org}}. In the 'Getting Started' box half-way down the page follow the 'download R' link. Scroll down to the UK and select any one of the three links. On the next page choose the appropriate operating system for your computer from the three 'Download R for...' options. 
+
+This manual, and the accompanying practical will assume some famililarity with the R statistical language. In particular, you should be familiar with the following concepts:
+
+\begin{itemize}
+\item{Using the RStudio program}
+\item{Setting your working directory}
+\item{Creating variables and basic object types; in particular vectors and data frames}
+\item{Using built-in R functions}
+\item{Using R to get help on functions}
+\item{Subset operations for vectors and data frames using the [] notation}
+\item{Reading tabular data into R}
+\item{Basic plots; scatter plots, boxplot and histogram}
+\end{itemize}
+
+Several Online videos are available that cover this materials. For example
+
+\begin{itemize}
+\item{\href{http://shop.oreilly.com/product/0636920034834.do}{\color{blue}{http://shop.oreilly.com/product/0636920034834.do}}}
+\item{\href{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}{\color{blue}{http://blog.revolutionanalytics.com/2012/12/coursera-videos.html}}}
+\item{\href{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}{\color{blue}{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}}}
+\end{itemize}
+
+
+\subsection{Installation of R}
+After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is \Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
+
+\subsection{Installation of RStudio}
+To install RStudio visit \href{http://www.rstudio.com/products/RStudio/}{\color{blue}{http://www.rstudio.com/products/RStudio/}} and follow the links to download {\tt RStudio Desktop} for your operating system.
+
+
+\subsection{R packages Used}
+
+In order to run the examples in this manual, and the practical, you will need to execute the following command in R to install the required packages.
+<<eval=FALSE>>=
+install.packages(c("reshape2","beeswarm","RColorBrewer"))
+@
+
 
 \section{ANOVA}
 
@@ -203,6 +206,8 @@ Luckily, you won’t need to do the calculations from Table \ref{anova-table} by
 
 Obviously the outcome of the one-way ANOVA depends on the data available. If there is high variation in the data, a much larger sample will be needed to detect a difference between groups. Likewise, if we are interested in detecting very small differences between groups a larger sample size will be required. 
 
+\subsection{ANOVA assumptions}
+\label{anova-assumptions}
 There are several assumptions behind the one-way ANOVA:
 
 \begin{itemize}
@@ -268,6 +273,8 @@ dim(proteinData)
 summary(proteinData)
 @
 
+\subsection{Checking the model assumptions}
+
 A boxplot of these data can be created using the \Rfunction{boxplot} function, which allows us to compare the median and inter-quartile range (IQR) of each cell type. Optionally, we can use the \CRANpkg{beeswarm} package to overlay individual points on the plot. See Figure \ref{fig:boxplot}
 
 <<boxplot, fig.lp="fig:",fig.cap="Boxplot of the protein expression levels for five cell types">>=
@@ -283,7 +290,7 @@ Figure \ref{fig:boxplot} shows us that the median value varies between the five 
 
 
 
-We can make a similar assessment of the data using a histogram (plotted separately for each group in our dataset), and in particular we can use our histograms to make an assessment of normality and constant variance which are two of the assumptions behind ANOVA. See Figure \ref{fig:hist1}
+We can make a similar assessment of the data using a histogram (plotted separately for each group in our dataset). See Figure \ref{fig:hist1}. In particular we can use these histograms to make an assessment of normality and constant variance which are two of the assumptions behind ANOVA (Section \ref{anova-assumptions}). 
 
 <<hist1, fig.lp="fig:",fig.cap="Histogram of the protein expression levels for five cell types">>=
 par(mfrow=c(2,3))
@@ -297,7 +304,7 @@ hist(proteinData$E,xlab="E",col=cols[5],main="")
 
 \bioccomment{If you are more-familiar with programming, you could write this chunk of code with a for loop (or similar)}
 
-In its current format, the data are unsuitable for analysis using one-way ANOVA as both the normality assumption and the constant variance assumption are violated. We can sometimes overcome this issue by transforming the data, and in this case we can use a log-transformation to normalise the data (Note: you do not need to do this step if the assumptions of normality and constant variance hold). This can be carried out within R using the \Rfunction{log}
+In its current format, the data are unsuitable for analysis using one-way ANOVA as both the normality assumption and the constant variance assumption are violated. We can sometimes overcome this issue by transforming the data, and in this case we can use a log-transformation to normalise the data (Note: you do not need to do this step if the assumptions of normality and constant variance hold). This can be carried out within R using the \Rfunction{log} function.
 
 <<>>=
 proteinData.ln <- log(proteinData)
@@ -317,18 +324,28 @@ hist(proteinData.ln$D,xlab="D",col=cols[4],main="")
 hist(proteinData.ln$E,xlab="E",col=cols[5],main="")
 @
 
+\subsection{Fitting the model}
 
+Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA. When perfoming linear regression or ANOVA in R, it is more convenient to transform our data into \textbf{long} format. The package \CRANpkg{reshape2} can do this for us. Once we have transformed our data, the \Rfunction{aov} fits the analysis of variance model to our data. Diagnostic plots of the model fit can be visualised using the \Rfunction{plot} function (Figure \ref{fig:anova-fit}). Of the most interest is the QQ-plot, which allows us to assess whether the distribution of the response variable should is normally distributed for each group being compared.
 
-Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA.
-
-<<>>=
+<<anova-fit, fig.lp="fig:",fig.cap="Visualising the results of the ANOVA model">>=
 library(reshape2)
 anovaData <- melt(proteinData.ln)
 head(anovaData)
 mod <- aov(value~ variable, data=anovaData)
-summary(aov(mod))
+mod
+par(mfrow=c(2,2))
+plot(mod)
 @
-One of the assumptions of the one-way ANOVA, which we have already explored with our scatter plot, is that the variances in each of the five groups are approximately equal. GraphPad Prism also formally tests this assumption when carrying out a one-way ANOVA, using a Bartlett's test. The results provide a p-value indicating whether equal variance can be assumed, with a value less than 0.05 suggesting that equal variance should not be assumed. 
+
+The \Rfunction{summary} function allows us to assess 
+<<>>=
+summary(aov(mod))
+
+@
+
+
+One of the assumptions of the one-way ANOVA, which we have already explored with our scatter plot, is that the variances in each of the five groups are approximately equal. We can formally test this assumption when carrying out a one-way ANOVA, using a Bartlett's test. The results provide a p-value indicating whether equal variance can be assumed, with a value less than 0.05 suggesting that equal variance should not be assumed. 
 
 <<>>=
 bt <- bartlett.test(value~variable,data=anovaData)
@@ -337,7 +354,7 @@ bt
 
 
 
-In this example, the p-value was \Sexpr{round(bt$p.value,3)}, so there is no evidence to suggest that the variances in each of the five groups aren't approximately equal to each other. It is important to note than GraphPad Prism does not perform the Bartlett's test if any of the treatment groups have fewer than 5 observations. If the Bartlett's test gives a significant p-value, we cannot assume equal variances across the groups and a non-parametric test, such as the Kruskal-Wallis test, should be used instead of a one-way ANOVA.
+In this example, the p-value was \Sexpr{round(bt$p.value,3)}, so there is no evidence to suggest that the variances in each of the five groups aren't approximately equal to each other. If the Bartlett's test gives a significant p-value, we cannot assume equal variances across the groups and a non-parametric test, such as the Kruskal-Wallis test, should be used instead of a one-way ANOVA.
 
 The equal variance assumption is reasonable in this example, so we can go ahead and use the one-way ANOVA to analyse the data. The results of the one-way ANOVA provide a p-value of $<0.0001$ which is statistically significant. This suggests that there is evidence of a difference in the mean log-transformed protein expression levels between two or more of the five cell types. As the result of the one-way ANOVA was significant, we may be interested in making further comparisons between pairs of groups, and we can do this with the post- test results. Note: if the one-way ANOVA result had not been significant we would usually stop here and not look at the post-test results.
 
@@ -350,5 +367,56 @@ post.tests
 The post-tests are actually just unpaired t-tests, but the results reported are adjusted for multiple testing. In this example, we want to compare all pairs of groups, but sometimes there may be specific groups that you wish to compare. You should plan your comparisons before starting your analysis and it is better, at least from a statistical angle, to perform the least number of comparisons that will sufficiently answer your question(s). As we want to perform more than one t-test on this data (in fact we are performing 10 pairwise comparisons!), we must be careful to adjust for multiple testing. Here we see that there is a significant difference between cell types A v D (p value: \Sexpr{post.tests$variable["D-A","p adj"]}), a very significant difference between cell types B v E (p value: \Sexpr{post.tests$variable["E-B","p adj"]}) and C v D (p value: \Sexpr{post.tests$variable["D-C","p adj"]}), and an extremely significant difference between cell types B v D (p value: \Sexpr{post.tests$variable["D-B","p adj"]}). 
 
 Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$variable["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$variable["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$variable["B-A","diff"],3)),3)}$.
+
+
+\section{Appendix}
+
+\subsection{Fun datasets to play with}
+
+\subsubsection{Elderton and Pearson's (1910) data on drinking and wages}
+
+In 1910, Karl Pearson weighed in on the debate, fostered by the temperance movement, on the evils done by alcohol not only to drinkers, but to their families. The report "A first study of the influence of parental alcholism on the physique and ability of their offspring" was an ambitious attempt to the new methods of statistics to bear on an important question of social policy, to see if the hypothesis that children were damaged by parental alcoholism would stand up to statistical scrutiny.
+
+Working with his assistant, Ethel M. Elderton, Pearson collected voluminous data in Edinburgh and Manchester on many aspects of health, stature, intelligence, etc. of children classified according to the drinking habits of their parents. His conclusions where almost invariably negative: the tendency of parents to drink appeared unrelated to any thing he had measured.
+
+The firestorm that this report set off is well described by Stigler (1999), Chapter 1. The data set DrinksWages is just one of Pearsons many tables, that he published in a letter to The Times, August 10, 1910.
+
+<<>>=
+library(HistData)
+data("DrinksWages")
+head(DrinksWages)
+boxplot(wage~class,data=DrinksWages)
+par(mfrow=c(2,2))
+plot(aov(wage~class,data=DrinksWages))
+summary(aov(wage~class,data=DrinksWages))
+with(DrinksWages, plot(wage, sober/n, col=c("blue","red","green")[class]))
+
+# fit logistic regression model of sober on wage
+mod.sober <- glm(cbind(sober, n) ~ wage, family=binomial, data=DrinksWages)
+summary(mod.sober)
+op <- par(mfrow=c(2,2))
+plot(mod.sober)
+@
+
+\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Chopstick Effectiveness}}}
+
+<<>>=
+csticks <- read.csv("http://blog.yhathq.com/static/misc/data/chopstick-effectiveness.csv")
+head(csticks)
+boxplot(Food.Pinching.Effeciency~Chopstick.Length,data=csticks)
+summary(aov(Food.Pinching.Effeciency~Chopstick.Length,data=csticks))
+@
+
+\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Effect of LSD on mathematical ability}}}
+
+<<>>=
+lsd <- data.frame(Drugs = c(1.17,2.97,3.26,4.69,5.83,6,6.41), 
+                  Score=c(78.93,58.20,67.47,37.47,45.65,32.92,29.98))
+mod <- lm(Score~Drugs,data=lsd)
+summary(mod)
+plot(Score~Drugs,data=lsd)
+abline(mod)
+@
+
 
 \end{document}
