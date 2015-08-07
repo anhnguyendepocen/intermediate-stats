@@ -3,7 +3,7 @@
 
 <<eval=FALSE,echo=FALSE>>=
 ##Make sure these packages are installed before trying to compile
-install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm"))
+install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm","UsingR"))
 source("http://www.bioconductor.org/biocLite.R")
 biocLite("BiocStyle")
 @
@@ -398,25 +398,8 @@ op <- par(mfrow=c(2,2))
 plot(mod.sober)
 @
 
-\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Chopstick Effectiveness}}}
 
-<<>>=
-csticks <- read.csv("http://blog.yhathq.com/static/misc/data/chopstick-effectiveness.csv")
-head(csticks)
-boxplot(Food.Pinching.Effeciency~Chopstick.Length,data=csticks)
-summary(aov(Food.Pinching.Effeciency~Chopstick.Length,data=csticks))
-@
 
-\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Effect of LSD on mathematical ability}}}
-
-<<>>=
-lsd <- data.frame(Drugs = c(1.17,2.97,3.26,4.69,5.83,6,6.41), 
-                  Score=c(78.93,58.20,67.47,37.47,45.65,32.92,29.98))
-mod <- lm(Score~Drugs,data=lsd)
-summary(mod)
-plot(Score~Drugs,data=lsd)
-abline(mod)
-@
 
 \subsubsection{Wellbeing}
 
@@ -451,6 +434,28 @@ opar <- par(mfrow = c(2, 2), oma = c(0, 0, 1.1, 0),
             mar = c(4.1, 4.1, 2.1, 1.1))
 plot(fm1)
 par(opar)
+@
+
+
+
+\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Chopstick Effectiveness}}}
+
+<<>>=
+csticks <- read.csv("http://blog.yhathq.com/static/misc/data/chopstick-effectiveness.csv")
+head(csticks)
+boxplot(Food.Pinching.Effeciency~Chopstick.Length,data=csticks)
+summary(aov(Food.Pinching.Effeciency~Chopstick.Length,data=csticks))
+@
+
+\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Effect of LSD on mathematical ability}}}
+
+<<>>=
+lsd <- data.frame(Drugs = c(1.17,2.97,3.26,4.69,5.83,6,6.41), 
+                  Score=c(78.93,58.20,67.47,37.47,45.65,32.92,29.98))
+mod <- lm(Score~Drugs,data=lsd)
+summary(mod)
+plot(Score~Drugs,data=lsd)
+abline(mod)
 @
 
 
