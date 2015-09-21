@@ -3,7 +3,7 @@
 
 <<eval=FALSE,echo=FALSE>>=
 ##Make sure these packages are installed before trying to compile
-install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm","UsingR","tidyr"))
+install.packages(c("ggplot2", "gridExtra","RColorBrewer","knitr","beeswarm","UsingR","tidyr","rmarkdown"))
 source("http://www.bioconductor.org/biocLite.R")
 biocLite("BiocStyle")
 @
@@ -152,7 +152,8 @@ Several Online videos are available that cover this materials. For example
 
 
 \subsection{Installation of R}
-After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is \Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
+After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is {\color
+{red}{\Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}}}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
 
 \subsection{Installation of RStudio}
 To install RStudio visit \href{http://www.rstudio.com/products/RStudio/}{\color{blue}{http://www.rstudio.com/products/RStudio/}} and follow the links to download {\tt RStudio Desktop} for your operating system.
