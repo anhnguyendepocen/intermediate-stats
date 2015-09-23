@@ -1,6 +1,7 @@
 
 \documentclass[12pt]{article}
 
+
 <<eval=FALSE,echo=FALSE>>=
 ##Make sure these packages are installed before trying to compile
 install.packages(c("ggplot2", "gridExtra","RColorBrewer","knitr","beeswarm","UsingR","tidyr","rmarkdown"))
@@ -23,7 +24,8 @@ BiocStyle::latex()
 \usepackage{ifthen} 
 \usepackage{xcolor,colortbl}
 \newboolean{includethis} 
-\setboolean{includethis}{true} 
+\setboolean{includethis}{true}
+
 \newcommand{\ifinclude}[1]{\ifthenelse{\boolean{includethis}}{#1}{}} 
 
 
@@ -222,7 +224,7 @@ Another important assumption is that there is approximately equal variance acros
 
 A third assumption of the one-way ANOVA is the independence of observations. There is no easy way of assessing independence, so a lot of people overlook this assumption. However, a little thought about where the data comes from and how it was collected can give us a good indication of whether the observations are independent or not. Things like taking observations from related individuals or having multiple measurements per subject will cause the independence assumption to be invalid.
 
-If the F-test provides a significant result, we may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the effect size. This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing and GraphPad Prism has several built-in options to do this. There are several different types of multiple-testing adjustment than can be made, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-test}.  
+If the F-test provides a significant result, we may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the effect size. This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing and R has several options to do this. There are several different types of multiple-testing adjustment than can be made, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-test}.  
 
 \subsection{Choosing the correct post-test}
 \label{choosing-the-correct-post-test}
@@ -327,7 +329,11 @@ hist(proteinData.ln$E,xlab="E",col=cols[5],main="")
 
 \subsection{Fitting the model}
 
-Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA. When perfoming linear regression or ANOVA in R, it is more convenient to transform our data into \textbf{long} format. The package \CRANpkg{tidyr} can do this for us. Once we have transformed our data, the \Rfunction{aov} fits the analysis of variance model to our data. Diagnostic plots of the model fit can be visualised using the \Rfunction{plot} function (Figure \ref{fig:anova-fit}). Of the most interest is the QQ-plot, which allows us to assess whether the distribution of the response variable should is normally distributed for each group being compared.
+Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA. 
+
+When perfoming linear regression or ANOVA in R, it is more convenient to transform our data into \textbf{long} format, which can be done using the \Rcode{gather} function from the package \CRANpkg{tidyr}. For comprehensive descriptions of data manipulation and tidy data, see Hadley Wickham's paper \cite{tidyr:paper} or video \cite{tidyr:video} on the subject. 
+
+Once we have transformed our data, the \Rfunction{aov} function fits the analysis of variance model to our data. Diagnostic plots of the model fit can be visualised using the \Rfunction{plot} function (Figure \ref{fig:anova-fit}). Of the most interest is the QQ-plot, which allows us to assess whether the distribution of the response variable should is normally distributed for each group being compared.
 
 <<anova-fit, fig.lp="fig:",fig.cap="Visualising the results of the ANOVA model">>=
 library(tidyr)
@@ -339,7 +345,7 @@ par(mfrow=c(2,2))
 plot(mod)
 @
 
-The \Rfunction{summary} function allows us to assess 
+The \Rfunction{summary} function allows us to assess the significance of the model:-
 <<>>=
 summary(aov(mod))
 
@@ -369,5 +375,7 @@ The post-tests are actually just unpaired t-tests, but the results reported are 
 
 Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$key["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$key["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$key["B-A","diff"],3)),3)}$.
 
+
+\bibliography{stats}
 
 \end{document}
