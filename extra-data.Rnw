@@ -1,7 +1,7 @@
 \documentclass{article}
 <<eval=FALSE,echo=FALSE>>=
 ##Make sure these packages are installed before trying to compile
-install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm","UsingR"))
+install.packages(c("ggplot2", "reshape2","gridExtra","RColorBrewer","knitr","beeswarm","UsingR","gapminder","xlsx"))
 source("http://www.bioconductor.org/biocLite.R")
 biocLite("BiocStyle")
 @
@@ -97,8 +97,70 @@ par(opar)
 @
 
 
+\subsubsection{Gap Minder Data}
 
-\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Chopstick Effectiveness}}}
+Acknowledgement: http://www.analyticsforfun.com/2014/06/performing-anova-test-in-r-results-and.html
+
+The gapminder R package provides a data frame of life expectancies for various countries, along with continent assignments
+<<>>=
+library(gapminder)
+data(gapminder)
+head(gapminder)
+@
+
+We can get other risk factors of interest from the gapminder website
+<<eval=FALSE>>=
+download.file("http://spreadsheets.google.com/pub?key=phAwcNAVuyj0Zbn8wVYsEHQ&output=csv",destfile = "newBreastCancerCases.csv")
+download.file("http://spreadsheets.google.com/pub?key=0AgogXXPMARyldGJqTDRfNHBWODJMRWlZaVhNclhNZXc&output=csv",destfile = "alcohol.csv")
+download.file("http://spreadsheets.google.com/pub?key=0ArfEDsV3bBwCdHBzUVVSMDlTX1ZCUnNJQ3ZFdkFXVFE&output=csv",destfile = "bloodPressure.csv")
+download.file("http://spreadsheets.google.com/pub?key=0ArfEDsV3bBwCdGt0elo2dzJMVVQ3WmFGSmdhc09LRlE&output=csv",destfile = "bodyMassIndex.csv")
+download.file("http://spreadsheets.google.com/pub?key=0ArfEDsV3bBwCdGJHcHZkSUdBcU56aS1OT3lLeU4tRHc&output=csv",destfile = "cholesterol.csv")
+download.file("http://spreadsheets.google.com/pub?key=thortPEzDn2xc_5bU255mPA&output=csv",destfile="smoking.csv")
+@
+
+
+<<>>=
+library(dplyr)
+
+newCases <- read.csv("newBreastCancerCases.csv")
+
+newCases <- newCases %>% rename(country = Breast.Female.Incidence,NewCasesOfBreastCancerIn2002 = X2002) %>% 
+            select(country, NewCasesOfBreastCancerIn2002) %>% tbl_df()
+
+alcohol <- read.csv("alcohol.csv") %>% rename(country = X,AlcoholComsumption=X2005) %>% 
+          select(country, AlcoholComsumption) %>% tbl_df()
+
+bloodPressure <- read.csv("bloodPressure.csv") %>% rename(country = SBP.female..mm.Hg...age.standardized.mean, BloodPressure = X2002) %>% 
+                select(country, BloodPressure) %>%  tbl_df()
+
+bodyMass <- read.csv("bodyMassIndex.csv") %>% rename(country = Country, BodyMassIndex = X2002) %>% 
+            select(country,BodyMassIndex) %>% tbl_df()
+      
+cholestorol <- read.csv("cholesterol.csv") %>% rename(country = TC.female..mmol.L...age.standardized.mean, Cholestorol = X2002) %>% 
+            select(country, Cholestorol) %>% tbl_df()
+
+smoking <- read.csv("smoking.csv") %>% rename(country = Prevalence.of.current.tobacco.use.among.adults....15.years......female, Smoking = X2002) %>% 
+          select(country, Smoking)
+
+gapminder <- gapminder %>% filter(year == 2002) %>% tbl_df()
+
+breastCancerFactors <- inner_join(gapminder,newCases) %>% 
+                      inner_join(alcohol) %>% 
+                      inner_join(bloodPressure) %>% 
+                      inner_join(bodyMass) %>% 
+                      inner_join(cholestorol) %>% 
+                      inner_join(smoking)
+breastCancerFactors
+
+write.csv(breastCancerFactors,file="globalBreastCancerRisk.csv",quote=FALSE,row.names = FALSE)
+
+breastCancerFactors %>% group_by(continent) %>% summarise(mean(NewCasesOfBreastCancerIn2002))
+
+breastCancerFactors %>% ggplot(aes(x=continent,y=NewCasesOfBreastCancerIn2002)) + geom_boxplot()
+
+@
+
+\subsubsection{Chopstick Effectiveness}
 
 <<>>=
 csticks <- read.csv("http://blog.yhathq.com/static/misc/data/chopstick-effectiveness.csv")
@@ -107,7 +169,9 @@ boxplot(Food.Pinching.Effeciency~Chopstick.Length,data=csticks)
 summary(aov(Food.Pinching.Effeciency~Chopstick.Length,data=csticks))
 @
 
-\subsubsection{\href{http://blog.yhathq.com/posts/7-funny-datasets.html}{\color{blue}{Effect of LSD on mathematical ability}}}
+\subsubsection{Effect of LSD on mathematical ability}
+
+http://blog.yhathq.com/posts/7-funny-datasets.html
 
 <<>>=
 lsd <- data.frame(Drugs = c(1.17,2.97,3.26,4.69,5.83,6,6.41), 
@@ -118,6 +182,9 @@ plot(Score~Drugs,data=lsd)
 abline(mod)
 @
 
+\subsubsection{Duration of urination does not change with body size}
+
+An \href{http://www.improbable.com/ig/winners/}{\color{blue}{ignoble prize winner}} from 2015. The raw data from this study are provided in a table in (hnngh) pdf format. 
 
 
 \end{document}

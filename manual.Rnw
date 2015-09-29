@@ -67,7 +67,7 @@ Before conducting a formal analysis of our data, it is always a good idea to run
 \item{To identify any outlying values and if there is reason to question their validity, exclude them or investigate them further; }
 \item{To see the distribution of the observations and whether the planned analyses are appropriate.}
 \end{itemize}
-It's always a good idea to calculate some summary statistics for your data, such as the mean and standard deviation, or the median and inter-quartile range if your data is skewed. You should also consider whether there may be outliers in your data (but do not remove them from the analysis without good reason) or whether there may be missing data. Summary statistics were covered in detail in Part 1 of the course.
+It's always a good idea to calculate some summary statistics for your data, such as the mean and standard deviation, or the median and inter-quartile range if your data is skewed. You should also consider whether there may be outliers in your data (but do not remove them from the analysis without good reason) or whether there may be missing data. Summary statistics were covered in detail in our \href{http://bioinformatics-core-shared-training.github.io/IntroductionToStats/manual.pdf}{\color{blue}{Introductory Statistics}} course.
 
 \subsection{Statistical Tests - basic setup}
 
@@ -177,7 +177,7 @@ ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are thre
 
 The two-sample t-test is useful when we have just two groups of continuous data to compare, but when we want to compare more than two groups a one-way ANOVA can be used to simultaneously compare all groups rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
 
-A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance}(see Table \ref{anova-table}). 
+A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance} (see Table \ref{anova-table}). 
 
 \begin{table}[h]
 
@@ -209,7 +209,7 @@ Luckily, you won’t need to do the calculations from Table \ref{anova-table} by
 
 Obviously the outcome of the one-way ANOVA depends on the data available. If there is high variation in the data, a much larger sample will be needed to detect a difference between groups. Likewise, if we are interested in detecting very small differences between groups a larger sample size will be required. 
 
-\subsection{ANOVA assumptions}
+\subsubsection{ANOVA assumptions}
 \label{anova-assumptions}
 There are several assumptions behind the one-way ANOVA:
 
@@ -226,7 +226,7 @@ A third assumption of the one-way ANOVA is the independence of observations. The
 
 If the F-test provides a significant result, we may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the effect size. This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing and R has several options to do this. There are several different types of multiple-testing adjustment than can be made, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-test}.  
 
-\subsection{Choosing the correct post-test}
+\subsubsection{Choosing the correct post-test}
 \label{choosing-the-correct-post-test}
 
 \begin{table}[h]
@@ -248,7 +248,7 @@ Trend test & Test for linear trend between mean and column number \\
 \label{post-test}
 \end{table}
 
-\subsection{One-way ANOVA Example}
+\subsubsection{One-way ANOVA Example}
 
 Example: The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}
 
@@ -276,7 +276,7 @@ dim(proteinData)
 summary(proteinData)
 @
 
-\subsection{Checking the model assumptions}
+\subsubsection{Checking the model assumptions}
 
 A boxplot of these data can be created using the \Rfunction{boxplot} function, which allows us to compare the median and inter-quartile range (IQR) of each cell type. Optionally, we can use the \CRANpkg{beeswarm} package to overlay individual points on the plot. See Figure \ref{fig:boxplot}
 
@@ -327,7 +327,7 @@ hist(proteinData.ln$D,xlab="D",col=cols[4],main="")
 hist(proteinData.ln$E,xlab="E",col=cols[5],main="")
 @
 
-\subsection{Fitting the model}
+\subsubsection{Fitting the model}
 
 Figure \ref{fig:hist2} now shows that most of the cell types are approximately normally distributed, though cell type A is still a little questionable. We'll proceed for now, as the one-way ANOVA is quite robust to small deviations from normality, but we must bear this in mind when interpreting out results. We can also see from Figure \ref{fig:hist2} that the variance in each of the five groups is now much more similar. They do NOT need to be perfectly the same, and in this case they are similar enough for the assumption of equal variance to be reasonable. Now that we are happy that the assumptions are reasonable, we can perform the one-way ANOVA. 
 
@@ -375,7 +375,523 @@ The post-tests are actually just unpaired t-tests, but the results reported are 
 
 Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$key["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$key["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$key["B-A","diff"],3)),3)}$.
 
+\subsection{The Kruskal-Wallis test}
+\label{kruskal-wallis}
+
+This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test.  The Kruskal-Wallis test is derived from the one-way ANOVA, but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test.
+
+The assumptions of the Kruskal-Wallis test are:
+
+\begin{itemize}
+\item{1. The data have been collected from a randomly selected set of observations.}
+\item{2. The dependent variable is at least at the ordinal level of measurement.}
+\item{3. There are more than two independent groups.}
+\item{4. There is independence of observations within each group and between the groups.  There are no repeated measures or multiple response categories.}
+\item{5. The shapes of the distributions of the groups are similar.}
+\end{itemize}
+
+If the last assumption holds then the hypotheses are:
+
+$H_0$: The medians in the $k$ groups are equal.
+$H_A$: There is a difference in medians between the $k$ groups.
+
+If the last assumption does not hold:
+
+$H_0$: The $k$ groups have the same shape and location
+$H_A$: The $k$ groups have a different shape and location.
+
+The alternative hypothesis can be directional or non-directional.  If a significant result is obtained then post hoc testing can be used to see where any differences lie. If the assumptions are met the test can be used in the following way:
+
+\begin{itemize}
+\item{1. Determine the null and alternative hypothesis and $\alpha$ the level of significance for the test.}
+\item{2. Rank the whole sample from lowest to highest.}
+\item{3. Calculate the sum of the ranks for each group.}
+\item{4. Calculate the average rank in each group, $R_i$, and the average rank for the whole sample,$R$ .}
+\item{5. Calculate the test statistic $H$,
+\begin{equation}
+H = 12\frac{\sum n_i (R_i - R)^2}{N (N + 1)}
+\end{equation}
+where $n_i$ = the number of observations in group $i$
+$N$ = the total sample size}
+\item{6. Compare this value with the $\chi^2$ distribution with $k–1$ degrees of freedom.  If the statistic is bigger than the critical value in the chi-square table, the result is significant.  If the result is significant, then pairwise post hoc test can be carried out.}
+\end{itemize}
+
+\subsubsection{Example}
+
+The data are the reduction in weekly headache activity for three treatment groups, expressed as a percentage of the baseline data (example from Altman).
+
+<<echo=FALSE,results='asis'>>=
+headache <- matrix(c(62,74,86,74,91,37, 69,43,100,94,100,98, 50,-120,100,-288,4,-76), ncol=3)
+
+colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
+
+print(xtable(headache),include.rownames = FALSE)
+@
+
+A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA are not satisfied and we need to take a non-parametric approach.
+
+<<>>=
+headache <- matrix(c(62,74,86,74,91,37, 
+                     69,43,100,94,100,98, 
+                     50,-120,100,-288,4,-76), ncol=3)
+
+colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
+boxplot(headache)
+@
+
+
+The null and alternative hypothesis for our test are as follows:-
+
+$H_0$: The three samples come from populations with the same median.
+$H_A$: At least one sample comes from a population with a different median.
+
+Computing the ranks then gives the following table:
+
+<<echo=FALSE,results='asis'>>=
+N <- length(headache)
+ranks <- matrix(rank(headache),ncol=3)
+head.data <- data.frame("Relaxation / response feedback"=headache[,1], "Rank"=ranks[,1], "Relaxation alone"=headache[,2], "Rank" = ranks[,2], "Untreated" = headache[,3], "Rank"=ranks[,3])
+head.data <- rbind(head.data, c(NA,colSums(ranks)[1], NA, colSums(ranks)[2],NA,colSums(ranks)[3]))
+head.data <- rbind(head.data, c(NA,colSums(ranks)[1]/nrow(headache), NA, colSums(ranks)[2]/nrow(headache),NA,colSums(ranks)[3]/nrow(headache)))
+head.data <- cbind(c(rep("", nrow(headache)),"Rank sum","(mean)"),head.data)
+colnames(head.data) <- c("","Relaxation / response feedback","Rank","Relaxation alone","Rank","Untreated","Rank")
+rownames(head.data) <- NULL
+print(xtable(head.data),include.rownames = FALSE)
+
+R <- (N+1)/2
+R1 <- round(colSums(ranks)[1]/nrow(headache),3)
+R2 <- round(colSums(ranks)[2]/nrow(headache),3)
+R3 <- round(colSums(ranks)[3]/nrow(headache),3)
+headache.df <- data.frame(headache)
+headache.df <- gather(headache.df)
+kt <- kruskal.test(value~key,data=headache.df)
+
+
+@
+
+We then have all the varaibles that we need in order to compute the test statistic
+
+$R = \frac{N +1}{2} =  \frac{\Sexpr{N} + 1}{2} = \Sexpr{(N+1)/2}$ 
+
+$R_1 = \Sexpr{R1}$; $R_2 = \Sexpr{R2}$; $R_3 = \Sexpr{R3}$
+
+$H = \frac{12(\Sexpr{nrow(headache)}(\Sexpr{R1} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R2} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R3}-\Sexpr{R})^2)}{\Sexpr{N} (\Sexpr{N}+1)} = \Sexpr{kt$statistic}$
+
+To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package. We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test. 
+
+
+<<>>=
+library(tidyr)
+headache <- data.frame(headache)
+headache <- gather(headache)
+kt <- kruskal.test(value~key,data=headache)
+kt
+names(kt)
+kt$statistic
+kt$p.value
+@
+
+\subsection{Friedman's test}
+
+The Friedman test extends the previously mentioned Wilcoxon signed ranks test to more than two repeated values at more than two time points.  Alternatively, to more than two matched groups where the individuals of each group are randomly assigned to a group.
+
+The test examines the ranks at the different time points or matched pairs and tests whether the continuous underlying distribution of the variables is the same.  It is the non-parametric equivalent of the repeated measures ANOVA.
+
+\subsubsection{Examples from the literature}
+
+\begin{quote}
+The Friedman test is used by Kraemer et al in their paper: “Time-of-day variations of indicators of attention: performance, physiologic parameters, and self-assessment of sleepiness” (Biol Psychiatry 2000 Dec 1; 48(11):1069-80).  The objective of this study was to analyse time-of-day variations of different indicators of attention and their interrelations.  Time-of-day variations were tested non-parametrically with Friedman's test for repeated measurements.
+\end{quote}
+
+\begin{quote}
+Gustafson et al also use the Friedman test in their paper: “Effects of 4 hand-drying methods for removing bacteria from washed hands: a randomised trial” (Mayo Clin Proc 2000 Jul; 75(7): 705-8).  The objective of this study was to evaluate the effects of 4 different drying methods to remove bacteria from washed hands.  The Friedman test was used to show that there was no significant difference in the efficiency of the four methods at removing bacteria. 
+\end{quote}
+
+
+\subsubsection{Null Hypothesis}
+
+$H_0$: There is no difference in median between the groups being tested.
+$H_A$: There is at least one difference in median between the groups.
+
+This is a non-directional alternative hypothesis.  If the alternative hypothesis is to be directional a more powerful way of analysing the data would be to carry out planned comparisons, with the appropriate correction for multiple testing.  Alternatively, overall tests of significance followed by post hoc tests can be used.
+\subsubsection{Assumptions}
+
+\begin{itemize}
+
+\item{1. The data to be analysed are continuous and at least at the ordinal level of measurement.}
+\item{2. The data from a randomly selected sample are either multiple observations from a single sample across more than two time periods or conditions.  Otherwise, the data are blocks of matched subjects in which the subjects from a given block are each randomly assigned to one of the three or more conditions.}
+\item{3. The subjects or blocks of subjects are independent; that is, the results within one block do not have an influence on the results within the other blocks}
+\end{itemize}
+
+\subsubsection{Method}
+
+
+\begin{itemize}
+\item{1. Construct the null and alternative hypotheses.}
+\item{2. Construct a two-way table with N (the number of subjects or matched sets of subjects) rows and k (the number of conditions or data collection periods) columns.}
+\item{3. Rank each row from lowest to highest and sum ranks in each column.}
+\item{4. If the null hypothesis is not true then the sum of the columns will vary from column to column.  The Friedman test examines the extent to which these column sums vary from what is expected using the following formula:
+\begin{equation}
+F_r = \frac{12}{Nk(k+1)}\sum_j R^2_j - 3N(k+1)
+\end{equation}
+
+where:
+	$R_j$ = the sum of the ranks for column $j$
+	$N$ = the number of subjects
+	$k$ = the number of periods or conditions.
+	}
+\item{5. Look $F_r$ up in tables of Friedman’s distribution.}	
+\item{6. Reject the null hypothesis in favour of the alternative hypothesis if the Fr value is greater than (or equal to) the value in the tables.}
+\end{itemize}
+Note: If $N$ and $k$ are sufficiently large, then $F_r$ can be compared to a $\chi^2$ distribution on $k-1$ degrees of freedom.
+
+
+\subsubsection{Example}
+The data for this example is taken from Rubin and Peter’s paper.  The Friedman test will be used to study whether or not hydralazine would relieve high blood pressure in the lungs.
+
+
+<<echo=FALSE,results='asis'>>=
+rubinPeters <- data.frame(Person = 1:4, Before=c(22.2,17,14.1,17), After48Hours = c(5.4,6.3,8.5,10.7), After6Months = c(10.6,6.2,9.3,12.3))
+print(xtable(rubinPeters,caption="Total pulmonary resistance before and after hydralazine"),include.rownames=FALSE)
+
+@
+
+We create a data frame representation in R, and produce the boxplot:-
+
+<<>>=
+rubinPeters <- data.frame(Person = 1:4, 
+                          Before=c(22.2,17,14.1,17), 
+                          hrs48 = c(5.4,6.3,8.5,10.7), 
+                          mnths6 = c(10.6,6.2,9.3,12.3))
+boxplot(rubinPeters[,2:4])
+beeswarm(rubinPeters[,2:4],add=TRUE)
+@
+
+<<echo=FALSE,results='asis'>>=
+N <- length(rubinPeters[,2:4])
+ranks <- t(apply(rubinPeters[,2:4],1,rank))
+
+
+head.data <- data.frame("Person" = rubinPeters[,1], "Before" = rubinPeters[,2], "Rank"=ranks[,1], "hrs48"=rubinPeters$hrs48,"Rank"=ranks[,2], "mths6"=rubinPeters$mnths6,Rank=ranks[,3])
+
+
+head.data <- rbind(head.data, c(NA,NA,colSums(ranks)[1], NA, colSums(ranks)[2],NA,colSums(ranks)[3]))
+R1 <- colSums(ranks)[1]
+R2 <- colSums(ranks)[2]
+R3 <- colSums(ranks)[3]
+
+N <- nrow(rubinPeters)
+k <- ncol(rubinPeters[,2:4])
+
+#head.data <- rbind(head.data, c(NA,colSums(ranks)[1]/nrow(headache), NA, colSums(ranks)[2]/nrow(headache),NA,colSums(ranks)[3]/nrow(headache)))
+#head.data <- cbind(c(rep("", nrow(headache)),"Rank sum","(mean)"),head.data)
+colnames(head.data) <- c("Person","Before","Rank","After48Hours","Rank","After6Months","Rank")
+rownames(head.data) <- NULL
+print(xtable(head.data),include.rownames = FALSE)
+fr <-  friedman.test(as.matrix(rubinPeters[,-1]))
+@
+
+$F_r = \frac{12}{\Sexpr{N} \times \Sexpr{k}(\Sexpr{k} + 1)}[\Sexpr{R1}^2 + [\Sexpr{R2}^2 + \Sexpr{R3}^2] - [3 \times \Sexpr{N}(\Sexpr{k}+1)] = \Sexpr{fr$statistic}$
+
+As \Sexpr{fr$statistic} is the same as the value in the table there is sufficient evidence to reject the null hypothesis and conclude that at least one group is different from the others.
+
+<<>>=
+fr <-  friedman.test(as.matrix(rubinPeters[,-1]))
+fr
+@
+
+\subsubsection{Post-hoc testing}
+If the Friedman test shows that there is a difference in medians in the groups it is possible to carry out post hoc testing to see which groups there is actually a difference between.  This is done by comparing average ranks in all the pairs or comparing to baseline.  The null hypothesis that there is no difference in mean ranks between the pairs will be rejected if the absolute value of these differences is greater than a specified critical value.  If the following condition holds, the null hypothesis will be rejected:
+
+\begin{equation}
+|\bar{R_i} - \bar{R_j}| \geq Z_\alpha/[k(k-1)] \sqrt{\frac{k(k+1)}{6N}}
+\end{equation}
+
+where;
+$R_i$ = the mean rank in period or condition $i$
+$R_j$ = the mean rank in period or condtion $j$
+$Z_\alpha$ = the critical $z$ value for $\alpha'$
+$\alpha'$ = $\alpha/[k(k-1)]$
+$k$ = the number of periods or conditions
+$N$ = the number of subjects
+
+In the example above, the average ranks for the three time points are 3, 1.25 and 1.75.  Since k= 3 and $\alpha=0.05$ critical value of the z-statistic is a z for which $\alpha'$ = 0.05 / 3(2) = 0.0083.  Looking this value up in the normal tables gives z = 2.39.  The critical value 
+
+$2.39 \sqrt{\frac{3(4)}{6(4)}} = 1.68$
+
+The absolute values of the three comparisons are:
+
+$|\bar{R_1} - \bar{R_2}| = |3 - 1.25| = 1.75 > 1.68$
+
+$|\bar{R_1} - \bar{R_3}| = |3 - 1.75| = 1.25 < 1.68$
+
+$|\bar{R_2} - \bar{R_3}| = |1.25 - 1.75| = 0.5 < 1.68$
+
+
+The comparison between before treatment and 48 hours after treatment is the only one that is greater than the critical value of 1.68.  Therefore, we can conclude that according to the post hoc approach, hydralazine only relieves high blood pressure in the lungs 48 hours after the treatment.  This effect was not maintained 6 months after treatment.
+
+It is also possible to use the Wilcoxon ranked sign tests for post hoc testing.  The procedure is carried out in the same way as described before.  However, the Bonferroni correction must be applied to allow for multiple testing.  That is the critical value of $\alpha$ becomes $\alpha'=\alpha/k$ where k is the number of tests to be carried out and $\alpha$ is the original significance level.  The value of $\alpha'$ is the one looked at in the table or that the output p-value is compared against.
+
+\subsubsection{Presentation of the Results}
+
+The results of the Friedman test could be reported in the following way:
+
+\begin{quote}
+The results of the Friedman test indicate that there is a significant difference in median total pulmonary resistance across the three time periods.  Therefore, we can conclude that hydralazine alters total pulmonary resistance (p=0.042).  
+
+Post hoc analyses with the adjustment of the two-tailed level to 0.0083 indicated that there were decreases in total pulmonary resistance from before treatment (Md=17.0) to 48 hours after treatment (Md= 7.4).  No other significant differences were found.
+\end{quote}
+
+\textbf{Note:} That post hoc testing was carried out here on a very small sample size as an illustration, in reality post hoc testing would not be carried out on such a small sample size.
+
+\subsubsection{Advantages and Limitations}
+
+The Friedman test is very versatile and can be used with randomised block designs and multiple observations of a single sample.  It is useful when the dependent variable is skewed.
+
+There are some drawbacks however, it is possible for the medians not to change and there still to be significant differences between groups.  Although it is often referred to as the Friedman two-way ANOVA by ranks, it is restricted to within group comparisons.  It is not possible to test between group comparisons.  This is a major disadvantage in clinical research as it is not possible to make experimental-control group comparisons.  Each group can be analysed separately and compare their results.  However, it is not possible to test a group and time interaction with independent groups.
+
+\subsubsection{Summary}
+
+Friedman’s test, tests the null hypothesis that k related variables come from the same population.  For each case, the k variables are ranked from 1 to k; the test statistic is based on these ranks.  
+
+After establishing a difference between one of the variables, post hoc testing can be carried out to decide which of the variables are actually different.  An appropriate method for allowing for multiple testing must be carried out.
+
+\subsection{Median Test}
+
+Tests whether two or more independent samples are drawn from populations with the same median using the $\chi^2$ statistic.  It can be used when the assumptions of similarity of distributions for the Mann-Whitney U and Kruskal-Wallis tests are not met.
+
+\subsubsection{Null Hypothesis}
+
+$H_0$: There is no difference in medians amongst the groups being studied. 
+
+$H_A$: There is at least one difference in medians amongst the groups being studied.
+
+\subsubsection{Assumptions}
+The assumptions of the Median test are:
+
+\begin{itemize}
+\item{1. The dependent variable is at least at the ordinal level of measurement.  The data are from 2 or more groups}
+\item{2. The groups are independent and a subject can only be in one of the groups.}
+\item{3. The assumptions of the $\chi^2$ test apply to the second half of the test.}
+\end{itemize}
+
+\subsubsection{Method}
+
+If these assumptions are met then the test can be carried out in the following way:
+
+\begin{itemize}
+\item{1. Construct the null and alternative hypotheses and decide on $\alpha$ the level of significance for the test.}
+\item{2. Treat the data as a single sample and calculate the overall median.}
+\item{3. Separate the data into the various groups and classify the observations in each group as either above, below or equal to the overall median.  Calculate the number above and below or equal to the median, in each group.}
+\item{4. Arrange these values into a $2\times c$ contingency table, where the two rows are: > or ≤ to the overall median.  The $c$ columns are the groups.}
+\item{5. Calculate the $\chi^2$ statistic for the table, if the assumptions hold. }
+\item{6. Compare the value of the chi-square statistic with the value in the tables on ($c-1$) degrees of freedom (where $c$ is the number of groups) at the pre-specified level of $\alpha$}
+\item{7. Reject the null hypothesis of equal medians if $X^2$ exceeds the critical value of the $\chi^2$ distributions.}
+\item{8. If the null hypothesis is rejected, it is then possible to do post-hoc testing on the individual groups to see which ones are significantly different.  This again will be using the median test, but applied to pairs of groups.}
+\end{itemize}
+
+\subsubsection{Example}
+There are three groups with different types of dementia (data from Sanjana Nyatsanza, Fulbourn hospital).  Below are the patients’ scores on a mini mental state examination (MMSE).  The median test will be used to see if there is a significant difference between the groups.
+
+<<echo=FALSE,results='asis'>>=
+mmse <- data.frame(Group1=c(19,7,17,28,21,6,21,19,27,8,25), 
+                   Group2 = c(16,22,30,24,22,23,22,28,29,29,0),
+                   Group3 = c(4,9,30,29,25,22,25,26,27,18,10)
+)
+mmse.t <- t(mmse)
+colnames(mmse.t) <- rep("",nrow(mmse))
+xtable(mmse.t)
+@
+
+1. Stating the null hypothesis and significant level
+
+$H_0$: There is no difference in medians between the groups. 
+
+$H_A$: There is a difference in medians between the groups. 
+
+$\alpha=0.05$
+
+2. The overall median (i.e. the one in the middle when ranked in order) is \Sexpr{median(as.numeric(unlist(mmse)))}.
+
+3. Classify the values in each group as above or below \Sexpr{median(as.numeric(unlist(mmse)))}.
+
+<<echo=FALSE,results='asis'>>=
+mmse.t2 <- data.frame(matrix(nrow = nrow(mmse.t)*2,ncol=ncol(mmse.t)))
+mmse.t2[1,] <- mmse.t[1,]
+mmse.t2[2,] <- ifelse(mmse.t[1,] > 22, ">22", "<=22")
+mmse.t2[3,] <- mmse.t[2,]
+mmse.t2[4,] <- ifelse(mmse.t[2,] > 22, ">22", "<=22")
+mmse.t2[5,] <- mmse.t[3,]
+mmse.t2[6,] <- ifelse(mmse.t[3,] > 22, ">22", "<=22")
+print(xtable(mmse.t2),include.rownames = FALSE,include.colnames = FALSE)
+@
+
+<<echo=FALSE,results='asis'>>=
+med <- median(as.numeric(unlist(mmse)))
+class <- matrix(nrow=2,ncol=3)
+class[1,] <- apply(mmse.t, 1, function(x) sum(x <= 22))
+class[2,] <- apply(mmse.t, 1, function(x) sum(x > 22))
+class <- cbind(class,rowSums(class))
+class <- rbind(class, colSums(class))
+colnames(class) <- c("Group1", "Group2","Group3","Total")
+rownames(class) <- c("<=22", ">22","Total")
+xtable(class)
+@
+
+5. Find the expected values for each of the cells:
+
+<<echo=FALSE,results='asis'>>=
+print(xtable(data.frame(X=c(6,5),Y=c(6,5),Z=c(6,5))),include.rownames = FALSE,include.colnames = FALSE)
+@
+
+and calculate the $\chi^2$ statistic
+
+$\chi^2 = \sum_{ij} \frac{(O_{ij}-E_{ij})^2}{E_{ij}}$
+
+$ = \frac{(8 -6)^2}{6} + \frac{(5 -6)^2}{6} + \frac{(5 -6)^2}{6} + \frac{(3 -5)^2}{5} + \frac{(6 -5)^2}{5} + \frac{(6 -5)^2}{5}$
+
+$ = 0.667 + 0.167 + 0.167 + 0.8 + 0.2 + 0.2 = 2.20 $
+
+6. The $\chi^2$ statistic for $\alpha=0.05$ is $5.99$
+
+7. $\chi^2=2.20 < 5.99$, there is insufficient evidence to reject the null hypothesis that the medians are the same for all three groups, $p=0.33$
+
+8. As this result is not significant, post-hoc testing could not be carried out as there are no significant differences between the groups.
+
+The Median test has is very straightforward and easy to apply and is particularly useful when the exact values of the scores (especially those at the extremes) are unknown.  The test only considers two states for the scores, above and below (or equal to) the median and does not take the size of the differences into account.  Therefore, the Median test is less powerful than the Mann-Whitney U and Kruskal-Wallis tests.
+
+\subsection{Jonckheere-Terpstra Test}
+
+Also known as the test for ordered alternatives or a nonparametric test for trend.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test when the groups are ordered.  
+
+\subsubsection{Null Hypothesis}
+
+$H_0$: There is no difference in median values between the groups.  
+$H_A$: The median values of the groups increase in a specific predetermined sequence.  
+
+\subsubsection{Assumptions}
+
+\begin{itemize}
+\item{1. The data have been collected from a randomly selected set of observations.}
+\item{2. The data to be analysed are continuous and at least at the ordinal level of measurement.}
+\item{3. The $k$ groups must be ordinal with a predetermined order.}
+\item{4. Under the null hypothesis it is assumed that each sample is from the same population.}
+\end{itemize}
+
+\subsubsection{Method}
+
+\begin{itemize}
+\item{1. Construct the null and alternative hypotheses and determine the level of significance, $\alpha$.}
+\item{2. Specify the order of the groups, which need not be equal sized.}
+\item{3. Cast the data into a two-way table with the groups in the pre-specified order, arranged from smallest to largest.}
+\item{4. Within each group order the data from smallest to largest. }
+\item{5. Count the total number of times each value in the first group precedes (is lower than) a value in the subsequent groups this is the precedent count for the group.}
+\item{6. Add ½ to each precedent count when a tie occurs between groups.}
+\item{7. Find the precedent count for the remaining groups and sum over the groups to give $J$, the test statistic.}
+\item{8. Compare this value to that in the tables for $J$.  If the statistic is greater than or equal to the critical value in the Jonckheere-Terpstra test tables, the result is significant.  If the result is significant, the null hypothesis is rejected in favour of the alternative hypothesis.}
+\end{itemize}
+
+\subsection{Large Sample Size}
+
+1. When the sample size is large the distribution of J tends to a normal distribution, with mean:-
+
+\begin{equation}
+\mu_j = \frac{N^2 - \sum_{j=1}^kn^2_j}{4}
+\end{equation}
+
+and standard deviation
+
+\begin{equation}
+\sigma_j = \sqrt{\frac{N^2(2N +3) - \sum_{j=1}^k n_j^2 (2n_j+3)}{72}}
+\end{equation}
+where,
+
+$N$ = total sample size
+$n_j$ = sample size of group $j$
+$k$ = number of groups
+$\sum$ = sum across groups
+
+A $z$ statistic can then be calculated as follows:
+
+\begin{equation}
+z = \frac{J-\mu_j}{\sigma_j}
+\end{equation}
+
+This $z$ statistic can then be compared to the normal tables
+
+
+\subsubsection{Example}
+
+Mcm-2 values were collected in a breast cancer study.  The median Mcm-2 value was expected to increase with histological grade (data below).  This hypothesis was tested using the Jonckheere-Terpstra test.
+
+<<echo=FALSE,results='asis'>>=
+grade <- data.frame(Grade1 = c(1.99,3.01,4.17,7.13,9.82,9.91,NA,NA), 
+                    Grade2 = c(4.40,9.82,10.23,11.99,11.99,13.17,13.20,NA),
+                    Grade3 =c(6.94,8.04,9.82,15.75,18.30,25.01,26.40,28.17))
+print(xtable(grade),include.rownames=FALSE)
+@
+
+Stating assumptions and significance level
+
+1. $H_0$: The median Mcm-2 value is the same across histological grades.
+
+$H_A$: There is an increase is median Mcm-2 value as histological grade increases.
+$\alpha=0.05$
+
+2. The order of the groups is that of increasing histological grade.
+
+5. The precedent counts for each pair of groups is in the table below.  
+
+6. ½ has been added to each precedent count with a tie between groups.
+
+<<echo=FALSE,results='asis'>>=
+pcounts <- data.frame(Grade1And2 = c(7,7,7,6,5.5,5,NA,"Total:37.5"),Grade1And3 = c(8,8,8,7,5.5,5,NA,41.5),Grade2And3 = c(8,5.5,5,5,5,5,5,38.5))
+print(xtable(pcounts),include.rownames = FALSE)
+@
+
+7. $J = 37.5 + 41.5 + 38.5 = 117.5$
+
+8. From the tables ($n_1=6, n_2=7,n_3=8,\alpha=0.05$) the critical value is 99. As $117.5 > 99$, there is sufficient evidence to reject the null hypothesis and conclude that there is a significant increase in median Mcm-2 value as histological grade increases.
+
+\subsubsection{Presentation of results}
+
+The results of the Jonckheere-Terpstra test could be reported in the following way:
+
+\begin{quote}
+The results of the Jonckheere-Terpstra test show that there is a trend for an increase in median Mcm-2 value as histological grade increases (J=117.5, p=0.003).
+\end{quote}
+
+\subsubsection{Analysis in R}
+
+<<>>=
+library(clinfun)
+grade <- data.frame(Grade1 = c(1.99,3.01,4.17,7.13,9.82,9.91,NA,NA), 
+                    Grade2 = c(4.40,9.82,10.23,11.99,11.99,13.17,13.20,NA),
+                    Grade3 =c(6.94,8.04,9.82,15.75,18.30,25.01,26.40,28.17))
+grade <- gather(grade)
+grade$key <- as.numeric(gsub("Grade","",grade$key))
+jonckheere.test(grade$value,grade$key)
+
+@
+
+
+\subsubsection{Advantages and limitations}
+
+The main advantage of the Jonckheere-Terpstra test is that unlike the Kruskal-Wallis test it allows the groups to have an order therefore it is more powerful than the Kruskal-Wallis test if the groups have a pre-specified order.  Since the Jonckheere-Terpstra test is a test for trend there is no need for post hoc tests to see where differences lie after a significant result. 
+
+The main limitation of the test is that the groups must have a pre-specified or explicit order.  It is not possible to look for an order and then test for a trend.  If there is no explicit order then a Kruskal-Wallis test should be used instead. 
+
+\subsubsection{Summary}
+The Jonckheere-Terpstra test is a more powerful alternative to the Kruskal-Wallis test when there is an explicit order to the groups.  It is a test for trend of increasing medians between the groups.  It is a much under used nonparametric test often the Kruskal-Wallis test is used where it would have been more appropriate to use the Jonckheere-Terpstra test.
+
+\subsubsection{Summary of Several Independent Samples}
+
+In this section, five tests for use when the independent variable has more than two groups have been covered.  The Chi-Square test and the Mantel-Haenszel test are to be used when the dependent variable is categorical.  The Median and Kruskal-Wallis tests are to be used when the dependent variable is continuous but there is no order to the groups.  The Jonckheere-Terpstra test is more powerful if there is an order to the groups. 
+
+If the assumptions of the Kruskal-Wallis test are satisfied, it is more powerful to use this test than the Median Test.  That is the Kruskal-Wallis test is more likely to correctly reject the null hypothesis.  
+
 
 \bibliography{stats}
+
 
 \end{document}
