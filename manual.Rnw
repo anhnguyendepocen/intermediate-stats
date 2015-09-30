@@ -4,7 +4,7 @@
 
 <<eval=FALSE,echo=FALSE>>=
 ##Make sure these packages are installed before trying to compile
-install.packages(c("ggplot2", "gridExtra","RColorBrewer","knitr","beeswarm","UsingR","tidyr","rmarkdown"))
+install.packages(c("ggplot2", "gridExtra","RColorBrewer","knitr","beeswarm","UsingR","tidyr","rmarkdown","clinfun","RVAideMemoire"))
 source("http://www.bioconductor.org/biocLite.R")
 biocLite("BiocStyle")
 @
@@ -35,10 +35,11 @@ BiocStyle::latex()
 \date{Last Document revision: \today}
 \begin{document}
 
+
 \maketitle
 \tableofcontents
 
-\section{Statistics Introduction}
+\section{Course Introduction}
 
 \centerline{\includegraphics[width=4cm,height=4cm]{images/fisher.jpg}}
 
@@ -52,13 +53,7 @@ The goals of statistical methods could be summarised as follows:
 \item{designing the sampling approach so that valid and accurate conclusions can be made from the data collected.}
 \end{itemize}
 
-
-
-
-
-\subsection{Statistical Tests}
-
-The statistical approach used is dependent on the data type. In this document we will describe \textbf{ANOVA} (analysis of variance), which can be used when we have two or more groups of continuous numerical data, and \textbf{Linear Regression}
+The statistical approach used is dependent on the data type. In this document we will describe methods for comparing multiple groups (\textbf{ANOVA} (analysis of variance), and \textbf{non-parametric} alternatives), and \textbf{Linear Regression}. We will assume you are already familiar with methods to perform one-sample or two-sample tests, as described in our \href{http://bioinformatics-core-shared-training.github.io/IntroductionToStats/manual.pdf}{\color{blue}{Introductory Statistics}} course. After describing the assumptions of each test, we will give a worked example in R.
 
 \subsection{Exploratory Analysis}
 Before conducting a formal analysis of our data, it is always a good idea to run some exploratory checks of the data: 
@@ -129,7 +124,10 @@ The \textbf{power} of a statistical test will depend on:
 
 \section{R Introduction}
 
-To install R visit \href{www.r-project.org}{\color{blue}{www.r-project.org}}. In the 'Getting Started' box half-way down the page follow the 'download R' link. Scroll down to the UK and select any one of the three links. On the next page choose the appropriate operating system for your computer from the three 'Download R for...' options. 
+To install R visit \href{www.r-project.org}{\color{blue}{www.r-project.org}}. In the 'Getting Started' box half-way down the page follow the 'download R' link. On the next page choose the appropriate operating system for your computer from the three 'Download R for...' options. 
+
+Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the popular \href{https://www.rstudio.com/products/RStudio/#Desktop}{\color{blue}{Rstudio}} interface, which you will also need to install. The version of R used to write this manual is {\color{red}{\Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}}}. Please bear in mind that the version number you download may be different as new versions are released yearly. 
+
 
 This manual, and the accompanying practical will assume some famililarity with the R statistical language. In particular, you should be familiar with the following concepts:
 
@@ -152,24 +150,77 @@ Several Online videos are available that cover this materials. For example
 \item{\href{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}{\color{blue}{http://bitesizebio.com/webinar/20600/beginners-introduction-to-r-statistical-software}}}
 \end{itemize}
 
-
-\subsection{Installation of R}
-After clicking on the 'Download R for Windows' link, select 'install R for the first time' on the following page. The version of R used to write this manual is {\color
-{red}{\Sexpr{paste(R.Version()$major, R.Version()$minor,sep=".")}}}, the version number you download may be different as new versions are released every six months. Following this link will start the installation of R. If you get a security warning select 'Run'. Follow the directions in the install wizard to install R. We haven chosen to run {\tt R} through the {\tt RStudio} interface, which you will also need to install. 
-
-\subsection{Installation of RStudio}
-To install RStudio visit \href{http://www.rstudio.com/products/RStudio/}{\color{blue}{http://www.rstudio.com/products/RStudio/}} and follow the links to download {\tt RStudio Desktop} for your operating system.
-
-
 \subsection{R packages Used}
 
 In order to run the examples in this manual, and the practical, you will need to execute the following command in R to install the required packages.
 <<eval=FALSE>>=
-install.packages(c("tidyr","beeswarm","RColorBrewer"))
+install.packages(c("tidyr","beeswarm","RColorBrewer","clinfun","RVAideMemoire"))
+@
+
+\subsection{Formatting data for Statistical Testing in R}
+
+Before conducting a statistical test in R we often need to manipulate our data into a particular format. If you are familiar with working with numerical data in Excel (or similar), then you probably represent your data in tabular format. See Table \ref{messy.eg} for an example taken from the seminal 'Tidy Data' paper by Hadley Wickham \cite{tidyr:paper}.
+
+<<echo=FALSE,results='asis'>>=
+library(xtable)
+messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),treatmenta = c("-",16,3),treatmentb=c(2,11,1))
+print(xtable(messy,label="messy.eg",caption="An imaginary dataset in human-readable format."))
+@
+
+Table \ref{messy.eg} is easy for humans to comprehend; we can easily scan the table and identify that John Smith has a measurement of 18 for 'treatmenta' and no observation for 'treatmentb'. However, it is not very efficient for computers to deal with data in this format. For the majority of statistical testing that is performed in R, we think of the observations in our datasets as being explained by a series of factors, or explanatory variables. For example, in our imaginary dataset we have a measurement for each patient that belongs to either treatment group a, or treatment group b. Thus, the factor in this case would be treatment. Table \ref{tidy.eg} shows the same dataset, but in a \textit{'tidy'} format with \textit{variables} as columnsand each row forming a different \textit{observation}. Sometimes this is also referred to as \textit{long} data, as opposed to the \textit{wide} format of the original table.
+
+<<echo=FALSE,results='asis'>>=
+
+tidy <- data.frame(name = c("Jane Doe","Jane Doe", "John Smith", "John Smith", "Mary Johnson","Mary Johnson"), treatment = rep(c("a","b"),3), n = c(4,1,NA,18,6,7))
+
+print(xtable(tidy,label="tidy.eg",caption="The same imaginary dataset, but in tidy format."))
+
+@
+
+Several options exist in R to transform our data in this manner; such as the \Rfunction{stack} function from base R, to the \CRANpkg{reshape} and \CRANpkg{reshape2} packages. However, we will describe the \CRANpkg{tidyr} package, which is the evolution of \CRANpkg{reshape} and \CRANpkg{reshape2} and is nicely integrated with other advanced manipulation tools such as \CRANpkg{dplyr} and \CRANpkg{ggplot2}. 
+
+We will now illustrate the how to transform our imaginary dataset into a suitable format for statistical analysis using \CRANpkg{tidyr}. The goal of such an operation is to take the \Rcode{treatmenta} and \Rcode{treatmentb} columns and create two separate columns; one which indicates whether a particular observation was made for treatment a or treatmentb, and the corresponding values. In the language of \CRANpkg{tidyr}, we say the the treatment variable is a \textit{key}.
+
+<<>>=
+messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),
+                    treatmenta = c(NA,16,3),treatmentb=c(2,11,1))
+@
+
+The function to be used is called \Rfunction{gather} \footnote{Don't forget that you can get help on this function using \Rcode{?gather}}. The function is sometimes able to take a data frame as input and 'guess' what the tidy form of that dataset should look like. Finer control is possible, such as specifying column names in the output. In this example, we specify that we want a column in the output called \Rcode{'treatment'} for our new variable (the key), and \Rcode{'n'} for the corresponding values. The final argument is for specifying which columns in the input data are to be decomposed.
+
+<<>>=
+library(tidyr)
+tidy <- gather(messy,treatment,n,treatmenta,treatmentb)
+tidy
+@
+
+Note that we can use shortcuts to select columns, such as selecting all columns in the range \Rcode{treatmenta} to \Rcode{treatmentb}, or all columns except \Rcode{Name}. You should see that these give the same result. 
+<<eval=FALSE>>=
+gather(messy,treatment,n,treatmenta:treatmentb)
+gather(messy,treatment,n,-Name)
+
+@
+
+With our data in this format, we can now specifiy various formulas using the tilde $\approx$ syntax. You may have already seen the following syntax which will plot a boxplot with explanatory variable \Rcode{treatment} on the x-axis, and observations \Rcode{n} on the y-axis.
+
+<<>>=
+boxplot(tidy$n~tidy$treatment)
+@
+
+As we often have the variable and values that we wish to plot in the same data frame, there are a couple of shortcuts to avoid using the \$ syntax (which is a bit in-elegant). Firstly, functions such as \Rfunction{boxplot} and other statistical testing functions (e.g. \Rfunction{t.test}) have a \Rcode{data} argument. This allows the name of a data frame to be specified and the variables can be referred to by name.
+
+<<eval=FALSE>>=
+boxplot(n~treatment,data=tidy)
+@
+
+The \Rfunction{with} function also performs the same task;
+
+<<eval=FALSE>>=
+with(tidy, boxplot(n~treatment))
 @
 
 
-\section{ANOVA}
+\section{Comparing Multiple Groups}
 
 ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are three main types of ANOVA: one-way, two-way and repeated measures. In this course our main focus will be on the one-way ANOVA.
 
@@ -380,6 +431,8 @@ Just because a result is statistically significant does not mean that it is biol
 
 This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test.  The Kruskal-Wallis test is derived from the one-way ANOVA, but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test.
 
+\subsubsection{Assumptions}
+
 The assumptions of the Kruskal-Wallis test are:
 
 \begin{itemize}
@@ -389,6 +442,8 @@ The assumptions of the Kruskal-Wallis test are:
 \item{4. There is independence of observations within each group and between the groups.  There are no repeated measures or multiple response categories.}
 \item{5. The shapes of the distributions of the groups are similar.}
 \end{itemize}
+
+\subsubsection{Null Hypothesis}
 
 If the last assumption holds then the hypotheses are:
 
@@ -400,7 +455,11 @@ If the last assumption does not hold:
 $H_0$: The $k$ groups have the same shape and location
 $H_A$: The $k$ groups have a different shape and location.
 
-The alternative hypothesis can be directional or non-directional.  If a significant result is obtained then post hoc testing can be used to see where any differences lie. If the assumptions are met the test can be used in the following way:
+The alternative hypothesis can be directional or non-directional.  If a significant result is obtained then post hoc testing can be used to see where any differences lie. 
+
+\subsubsection{Method}
+
+If the assumptions are met the test can be used in the following way:
 
 \begin{itemize}
 \item{1. Determine the null and alternative hypothesis and $\alpha$ the level of significance for the test.}
@@ -426,17 +485,6 @@ headache <- matrix(c(62,74,86,74,91,37, 69,43,100,94,100,98, 50,-120,100,-288,4,
 colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
 
 print(xtable(headache),include.rownames = FALSE)
-@
-
-A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA are not satisfied and we need to take a non-parametric approach.
-
-<<>>=
-headache <- matrix(c(62,74,86,74,91,37, 
-                     69,43,100,94,100,98, 
-                     50,-120,100,-288,4,-76), ncol=3)
-
-colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
-boxplot(headache)
 @
 
 
@@ -475,10 +523,24 @@ $R = \frac{N +1}{2} =  \frac{\Sexpr{N} + 1}{2} = \Sexpr{(N+1)/2}$
 
 $R_1 = \Sexpr{R1}$; $R_2 = \Sexpr{R2}$; $R_3 = \Sexpr{R3}$
 
-$H = \frac{12(\Sexpr{nrow(headache)}(\Sexpr{R1} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R2} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R3}-\Sexpr{R})^2)}{\Sexpr{N} (\Sexpr{N}+1)} = \Sexpr{kt$statistic}$
+$H = \frac{12(\Sexpr{nrow(headache)}(\Sexpr{R1} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R2} - \Sexpr{R})^2 + \Sexpr{nrow(headache)}(\Sexpr{R3}-\Sexpr{R})^2)}{\Sexpr{N} (\Sexpr{N}+1)} = 5.69$
 
-To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package. We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test. 
+However, $\chi^2_{2,0.05}=5.99,5.69<5.99$. Therefore there is not sufficient evidence to reject the null hypothesis at the 5\% level of significance, $p=0.06$
 
+\subsubsection{Analysis in R}
+
+A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA are not satisfied and we need to take a non-parametric approach.
+
+<<>>=
+headache <- matrix(c(62,74,86,74,91,37, 
+                     69,43,100,94,100,98, 
+                     50,-120,100,-288,4,-76), ncol=3)
+
+colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
+boxplot(headache)
+@
+
+To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package. We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test.
 
 <<>>=
 library(tidyr)
@@ -490,6 +552,8 @@ names(kt)
 kt$statistic
 kt$p.value
 @
+
+
 
 \subsection{Friedman's test}
 
@@ -547,7 +611,7 @@ Note: If $N$ and $k$ are sufficiently large, then $F_r$ can be compared to a $\c
 
 
 \subsubsection{Example}
-The data for this example is taken from Rubin and Peter’s paper.  The Friedman test will be used to study whether or not hydralazine would relieve high blood pressure in the lungs.
+The data for this example is taken from Rubin and Peter's paper.  The Friedman test will be used to study whether or not hydralazine would relieve high blood pressure in the lungs.
 
 
 <<echo=FALSE,results='asis'>>=
@@ -556,16 +620,13 @@ print(xtable(rubinPeters,caption="Total pulmonary resistance before and after hy
 
 @
 
-We create a data frame representation in R, and produce the boxplot:-
-
-<<>>=
+<<echo=FALSE>>=
 rubinPeters <- data.frame(Person = 1:4, 
                           Before=c(22.2,17,14.1,17), 
                           hrs48 = c(5.4,6.3,8.5,10.7), 
                           mnths6 = c(10.6,6.2,9.3,12.3))
-boxplot(rubinPeters[,2:4])
-beeswarm(rubinPeters[,2:4],add=TRUE)
 @
+
 
 <<echo=FALSE,results='asis'>>=
 N <- length(rubinPeters[,2:4])
@@ -594,6 +655,19 @@ fr <-  friedman.test(as.matrix(rubinPeters[,-1]))
 $F_r = \frac{12}{\Sexpr{N} \times \Sexpr{k}(\Sexpr{k} + 1)}[\Sexpr{R1}^2 + [\Sexpr{R2}^2 + \Sexpr{R3}^2] - [3 \times \Sexpr{N}(\Sexpr{k}+1)] = \Sexpr{fr$statistic}$
 
 As \Sexpr{fr$statistic} is the same as the value in the table there is sufficient evidence to reject the null hypothesis and conclude that at least one group is different from the others.
+
+\subsubsection{Analysis in R}
+We create a data frame representation in R, and produce the boxplot:-
+
+<<>>=
+rubinPeters <- data.frame(Person = 1:4, 
+                          Before=c(22.2,17,14.1,17), 
+                          hrs48 = c(5.4,6.3,8.5,10.7), 
+                          mnths6 = c(10.6,6.2,9.3,12.3))
+boxplot(rubinPeters[,2:4])
+beeswarm(rubinPeters[,2:4],add=TRUE)
+@
+
 
 <<>>=
 fr <-  friedman.test(as.matrix(rubinPeters[,-1]))
@@ -762,7 +836,7 @@ The Median test has is very straightforward and easy to apply and is particularl
 
 \subsection{Jonckheere-Terpstra Test}
 
-Also known as the test for ordered alternatives or a nonparametric test for trend.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test when the groups are ordered.  
+Also known as the \textit{test for ordered alternatives} or a \textit{nonparametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test when the groups are ordered.  
 
 \subsubsection{Null Hypothesis}
 
@@ -791,7 +865,7 @@ $H_A$: The median values of the groups increase in a specific predetermined sequ
 \item{8. Compare this value to that in the tables for $J$.  If the statistic is greater than or equal to the critical value in the Jonckheere-Terpstra test tables, the result is significant.  If the result is significant, the null hypothesis is rejected in favour of the alternative hypothesis.}
 \end{itemize}
 
-\subsection{Large Sample Size}
+\subsubsection{Large Sample Size}
 
 1. When the sample size is large the distribution of J tends to a normal distribution, with mean:-
 
@@ -890,6 +964,9 @@ In this section, five tests for use when the independent variable has more than 
 
 If the assumptions of the Kruskal-Wallis test are satisfied, it is more powerful to use this test than the Median Test.  That is the Kruskal-Wallis test is more likely to correctly reject the null hypothesis.  
 
+\section{Regression}
+
+\subsection{Linear Regression}
 
 \bibliography{stats}
 
