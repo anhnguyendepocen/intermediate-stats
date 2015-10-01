@@ -167,7 +167,7 @@ messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),treatmenta 
 print(xtable(messy,label="messy.eg",caption="An imaginary dataset in human-readable format."))
 @
 
-Table \ref{messy.eg} is easy for humans to comprehend; we can easily scan the table and identify that John Smith has a measurement of 18 for 'treatmenta' and no observation for 'treatmentb'. However, it is not very efficient for computers to deal with data in this format. For the majority of statistical testing that is performed in R, we think of the observations in our datasets as being explained by a series of factors, or explanatory variables. For example, in our imaginary dataset we have a measurement for each patient that belongs to either treatment group a, or treatment group b. Thus, the factor in this case would be treatment. Table \ref{tidy.eg} shows the same dataset, but in a \textit{'tidy'} format with \textit{variables} as columnsand each row forming a different \textit{observation}. Sometimes this is also referred to as \textit{long} data, as opposed to the \textit{wide} format of the original table.
+Table \ref{messy.eg} is easy for humans to comprehend; we can easily scan the table and identify that John Smith has a measurement of 18 for 'treatmenta' and no observation for 'treatmentb'. However, it is not very efficient for computers to deal with data in this format. For the majority of statistical testing that is performed in R, we think of the observations in our datasets as being explained by a series of factors, or explanatory variables. For example, in our imaginary dataset we have a measurement for each patient that belongs to either treatment group a, or treatment group b. Thus, the factor in this case would be treatment. Table \ref{tidy.eg} shows the same dataset, but in a \textit{'tidy'} format with \textit{variables} as columns and each row forming a different \textit{observation}. Sometimes this is also referred to as \textit{long} data, as opposed to the \textit{wide} format of the original table.
 
 <<echo=FALSE,results='asis'>>=
 
@@ -201,7 +201,7 @@ gather(messy,treatment,n,-Name)
 
 @
 
-With our data in this format, we can now specifiy various formulas using the tilde $\approx$ syntax. You may have already seen the following syntax which will plot a boxplot with explanatory variable \Rcode{treatment} on the x-axis, and observations \Rcode{n} on the y-axis.
+With our data in this format, we can now specifiy various formulas using the tilde ($\sim$) syntax. You may have already seen the following syntax which will plot a boxplot with explanatory variable \Rcode{treatment} on the x-axis, and observations \Rcode{n} on the y-axis.
 
 <<>>=
 boxplot(tidy$n~tidy$treatment)
