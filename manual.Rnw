@@ -834,6 +834,25 @@ $ = 0.667 + 0.167 + 0.167 + 0.8 + 0.2 + 0.2 = 2.20 $
 
 The Median test has is very straightforward and easy to apply and is particularly useful when the exact values of the scores (especially those at the extremes) are unknown.  The test only considers two states for the scores, above and below (or equal to) the median and does not take the size of the differences into account.  Therefore, the Median test is less powerful than the Mann-Whitney U and Kruskal-Wallis tests.
 
+\subsection{Analysis in R}
+
+The median test is implemented in the \CRANpkg{RVAideMemoire} package. As usual we need to tidy the input data frame in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
+<<>>=
+library(RVAideMemoire)
+
+mmse <- data.frame(Group1=c(19,7,17,28,21,6,21,19,27,8,25), 
+                   Group2 = c(16,22,30,24,22,23,22,28,29,29,0),
+                   Group3 = c(4,9,30,29,25,22,25,26,27,18,10)
+)
+
+mmse <- gather(mmse)
+
+mood.medtest(value~key,data=mmse,exact=FALSE)
+
+mood.medtest(value~key,data=mmse)
+@
+
+
 \subsection{Jonckheere-Terpstra Test}
 
 Also known as the \textit{test for ordered alternatives} or a \textit{nonparametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test when the groups are ordered.  
