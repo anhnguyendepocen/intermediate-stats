@@ -200,9 +200,19 @@ kruskal.test(NewCasesOfBreastCancerIn2002~continent,data=bcStats.clean)
 pairwise.wilcox.test(bcStats.clean$NewCasesOfBreastCancerIn2002,bcStats.clean$continent)
 ```
     
+# Linear Regression
 
 
 
 
+```{r}
+mod <- lm(NewCasesOfBreastCancerIn2002~Cholestorol,data=bcStats.clean)
+summary(mod)
+```
 
+
+```{r}
+plot(bcStats.clean$Cholestorol,bcStats.clean$NewCasesOfBreastCancerIn2002,pch=16)
+abline(mod)
+```
 
