@@ -160,6 +160,25 @@ breastCancerFactors %>% ggplot(aes(x=continent,y=NewCasesOfBreastCancerIn2002)) 
 
 @
 
+
+<<>>=
+library(dplyr)
+
+newCases <- read.csv("newBreastCancerCases.csv")
+newCases <- newCases  %>%
+        select(Breast.Female.Incidence,X1995,X1996,X2002) %>% 
+        rename(Country = Breast.Female.Incidence)
+
+series <- matrix(nrow=8,ncol=3)
+series[,1] <- sample(na.omit(newCases[,2]),8)
+series[,2] <- sample(na.omit(newCases[,2]),8)
+series[,3] <- sample(na.omit(newCases[,3]),8)
+colnames(series) <- c("Year1","Year2","Year3")
+write.csv(series, file="BreastCancerSeries.csv",quote=FALSE,row.names=FALSE)
+@
+
+
+
 \subsubsection{Chopstick Effectiveness}
 
 <<>>=
