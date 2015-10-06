@@ -985,7 +985,306 @@ If the assumptions of the Kruskal-Wallis test are satisfied, it is more powerful
 
 \section{Regression}
 
+\textbf{Regression Analysis} refers to a set of statistical techniques for modeling the relationship between two or more variables. One of these variables is the \textbf{response} variable (or \textbf{dependent} variable), while the other variables are known as \textbf{explanatory} (or \textbf{independent}) variables. Both response and explanatory variables are continuous, i.e. real numbers with decimal places, for example weights, intensities or growth rates.
+
+Regression analysis is widely used for prediction, where the explanatory variables are known as \textbf{predictors} and the response variable is the thing that is being predicted.
+
+One way of working out whether regression is the appropriate analysis for your data is to consider the most natural way of plotting the data in order to address the question you are asking. An XY scatter plot would point to regression, whereas analysis of variance (ANOVA) might be more appropriate if a better representation of the data was in the form of a box and whiskers plot.
+
+<<scatterplot, fig.lp="fig:", fig.cap="Growth rate of E. coli at various concentrations of lactoferrin.", echo=FALSE>>=
+options(digits=3)
+data <- read.csv("lactoferrin.csv")
+plot(data, pch=16, xlab="Concentration", ylab="Growth rate")
+@
+
+An example of a dataset where regression analysis might be applied is shown in figure \ref{fig:scatterplot}. This shows the results of a dose-response experiment where an \textit{E. coli} strain was exposed to various concentrations of the growth inhibitor, lactoferrin. In this example, we are interested in how the growth rate varies with concentration and a regression analysis would be suitable. Regression analysis involves fitting a model to the data that attempts to describe the relationship between the response and explanatory variables, in this case the growth rate and concentration.
+
+There are several types of regression analysis \textemdash\ which you use will depend on the number of explanatory variables and the type of model to be fitted.
+
+\begin{itemize}
+\item{\textbf{Simple linear regression} \textendash\ the simplest and most frequently used, where there is one response variable and one explanatory variable and the relationship can be described through a linear model}
+\item{\textbf{Multiple linear regression} \textendash\ fits a linear model using multiple explanatory variables}
+\item{\textbf{Polynomial regression} \textendash\ used to test for non-linearity in a relationship}
+\item{\textbf{Non-linear regression} \textendash\ to fit a specified non-linear model to the data}
+\item{\textbf{Non-parametric regression} \textendash\ used when there is no obvious functional form}
+\end{itemize}
+
 \subsection{Linear Regression}
+
+Linear regression involves fitting the simplest model of all, a linear model of the form:
+
+\begin{equation}
+y = ax + b
+\end{equation}
+
+where $y$ is the response variable and $x$ is a continuous explanatory variable. This should look familiar as the equation for a straight line graph. There are two parameters, $a$ and $b$. $a$ is the intercept, the value of $y$ when $x = 0$, and $b$ is the slope, or gradient, and is equal to the change in $y$ divided by the change in $x$ that brought about the change in $y$.
+
+\subsubsection{The lactoferrin dataset}
+
+Let's go back to our example dataset in figure \ref{fig:scatterplot}, showing the effect of lactoferrin concentration on the growth rate of \textit{E. coli}. We can read the data into R using the \Rfunction{read.csv} function:
+
+<<>>=
+data <- read.csv("lactoferrin.csv")
+data
+@
+
+Although not strictly necessary, we now use \Rfunction{attach} to make the columns of the data frame accessible by name:
+
+<<>>=
+attach(data)
+names(data)
+conc
+growth
+@
+
+and we can generate something similar to figure \ref{fig:scatterplot} using the \Rfunction{plot} function:
+
+<<eval=FALSE>>=
+plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate")
+@
+
+Figure \ref{fig:scatterplot} shows that there is a roughly linear relationship between growth rate and lactoferrin concentration, with the growth rate decreasing with higher concentrations. We could estimate the parameters of a simple linear model by drawing a line through the data by eye and then calculating it's gradient and seeing where the line passes through the $y$-axis, i.e. the growth rate when the lactoferrin concentration is zero ($x = 0$). The R function \textbf{lm} will do this for us using a mathematical technique known as 'least squares'. Figure \ref{fig:bestfit} shows the resulting line of best fit. Also shown are the \textbf{residuals}, the vertical distances between the actual data points and the line of best fit, i.e. between the observed and fitted values.
+
+<<bestfit, fig.lp="fig:", fig.cap="Line of best fit and residuals.", echo=FALSE>>=
+plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate")
+model <- lm(growth ~ conc)
+abline(model)
+fitted <- predict(model)
+for (i in 1:10) lines(c(conc[i], conc[i]), c(growth[i], fitted[i]))
+@
+
+\subsubsection{Fitting the linear model}
+
+The aim is to minimize the sum of squares of the residuals (also known as the error sum of squares, \textbf{SSE}), i.e. to find the minimum of
+
+\begin{equation}
+SSE = \sum(y - a - bx)^2
+\end{equation}
+
+Mathematically, we set the derivative of this function with respect to the slope to zero, do the same for the derivative with respect to the intercept, and then solve the resultant simultaneous equations. This is left as an exercise for the more mathematically inclined, or see "Statistics: An Introduction using R" by Michael Crawley \cite{crawley:statsr}.
+
+In R, the tilde symbol, '$\sim$', is used in describing a model and can be read as 'is modelled as a function of'. In our example, the model would be written:
+
+\begin{equation}
+growth \sim conc
+\end{equation}
+
+The response variable goes on the left of the tilde and the explanatory variable on the right hand side. Our model can be read 'growth rate is modelled as a function of concentration'.
+
+To obtain the parameters of the model, also known as the coefficients, we fit a linear model using the \Rfunction{lm} function:
+
+<<>>=
+model <- lm(growth ~ conc)
+model
+@
+
+We can show the line of best fit on the plot using the \Rfunction{abline} function:
+
+<<eval=FALSE>>=
+plot(data, pch=16, xlab="Concentration", ylab="Growth rate")
+abline(model)
+@
+
+and the \Rfunction{predict} function will give us the fitted values for each data point:
+
+<<>>=
+fitted <- predict(model)
+fitted
+@
+
+The residuals are the differences between the observed values and the fitted values and the 
+
+<<>>=
+residuals <- growth - fitted
+residuals
+@
+
+A noteable property of linear regression is that the line of best fit passes through the point $(\bar{x}, \bar{y})$ where $\bar{x}$ and $\bar{y}$ are the mean values of x and y respectively. 
+
+\subsubsection{Calculating standard errors in the regression parameters}
+
+We would like to know how reliable are our estimates for the regression parameters, i.e. the slope and the intercept. For this we consider the total variation in $y$, represented by the total sum of squares of $y$:
+
+\begin{equation}
+SSY = \sum_i(y_i - \bar{y})^2
+\end{equation}
+
+The fitted values are represented formally by the symbol $\hat{y}_i$ and the sum of squares of the residuals, SSE, can be written as follows:
+
+\begin{equation}
+\hat{y}_i = a + bx_i
+\end{equation}
+
+\begin{equation}
+SSE = \sum_i(y_i - \hat{y}_i)^2
+\end{equation}
+
+Computing the SSE in R is straightforward:
+
+<<>>=
+SSE <- sum(residuals^2)
+SSE
+@
+
+The total variation in $y$, $SSY$, can be partitioned into separate components for the variation that is explained by the model, denoted by $SSR$, and the unexplained variation that is the error sum of squares, $SSE$, we've already calculated.
+
+\begin{equation}
+SSY = SSR + SSE
+\end{equation}
+
+The variation that is explained by the model is called the regression sum of squares, denoted by $SSR$, is given by:
+
+\begin{equation}
+SSR = \sum_i(\hat{y}_i - \bar{y}_i)^2
+\end{equation}
+
+Although the \Rfunction{lm} function does all the hard work for you, the following shows how to compute the variances in R from our data:
+
+<<echo=FALSE>>=
+options(digits=4)
+@
+
+<<>>=
+mean_growth <- mean(growth)
+mean_growth
+SSY <- sum((growth - mean_growth)^2)
+SSY
+SSR <- sum((fitted - mean_growth)^2)
+SSR
+SSE <- SSY - SSR
+SSE
+@
+
+<<echo=FALSE>>=
+error_variance <- SSE / (length(growth) - 2)
+F_ratio <- SSR / error_variance
+@
+
+<<echo=FALSE>>=
+options(digits=3)
+@
+
+\begin{table}[h]
+\centering
+\begin{tabular}{| l | c | c | c | c |}
+\hline
+\textbf{Source} & \textbf{Sum of squares} & \textbf{Degrees of freedom} & \textbf{Mean Squares} & \textbf{$F$ ratio} \\
+\hline
+Regression & $SSR = \Sexpr{SSR}$ & 1 & \Sexpr{SSR} & \Sexpr{F_ratio} \\
+\hline
+Error & $SSE = \Sexpr{SSE}$ & \Sexpr{length(growth) - 2} & $s^2 = \Sexpr{error_variance}$ & \\
+\hline
+Total & $SSY = \Sexpr{SSY}$ & \Sexpr{length(growth) - 1} & & \\
+\hline
+\end{tabular}
+\caption{Anova table for the lactoferrin dataset}
+\label{regression-anova-table}
+\end{table}
+
+<<echo=FALSE>>=
+options(digits=4)
+@
+
+
+These sources of variation are laid out in an analysis of variance table in table \ref{regression-anova-table}. The mean squares column contains values for the variance for each source, calculated as:
+
+\begin{equation}
+\mathrm{variance} = \frac{\mathrm{sum\ of\ squares}}{\mathrm{degrees\ of\ freedom}}
+\end{equation}
+
+The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$. The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1.
+
+The value of most interest in table \ref{regression-anova-table} is the error variance, $s^2$.
+
+\begin{equation}
+s^2 = \frac{SSE}{n - 2}
+\end{equation}
+
+This is used in computing the standard errors in both the slope and intercept (see \cite{crawley:statsr} for the formulae).
+
+The $F$ ratio is the ratio between the regression variance and the error variance.
+
+<<>>=
+error_variance <- SSE / (length(growth) - 2)
+error_variance
+F_ratio <- SSR / error_variance
+F_ratio
+@
+
+This can be used to test for a non-zero slope in the linear regression, where the null hypothesis is that the slope is zero, i.e. there is no dependence of the response variable on the explanatory variable. The Anova table and $p$ value for the test are computed in R by calling the \Rfunction{summary.aov} function:
+
+<<>>=
+summary.aov(model)
+@
+
+\subsubsection{Summarizing the linear model}
+
+The \Rfunction{summary} function shows the estimated slope and intercept parameters and their standard errors and is the more useful function. In practice you will not calculate the values of $SSY$, $SSE$, etc., long-hand as above, but instead just call the \Rfunction{summary} function.
+
+<<>>=
+summary(model)
+@
+
+\subsubsection{Measuring the degree of fit}
+
+The output from the \Rfunction{summary} method includes a value for $r^2$. This is a measure of the degree of fit and is computed as the fraction of the total variation in the response variable, $y$, that is explained by the regression.
+
+\begin{equation}
+r^2 = \frac{SSR}{SSY}
+\end{equation}
+
+<<>>=
+r_squared <- SSR / SSY
+r_squared
+@
+
+This varies from 1 when the regression explains all of the variation in $y$ (all the observed points lie on the line of best fit, $SSR = SSY$ and $SSE = 0$) to 0 when the regression explains none of the variation ($SSE = SSY$, $SSR = 0$). The square root of this quantity, $r$, is the correlation coefficient.
+
+\subsubsection{Checking the model assumptions}
+
+Aside from the assumption that there is a linear relationship between the explanatory variable and the response variable, linear regression also makes the following assumptions:
+
+\begin{itemize}
+\item{\textbf{Constant variance (homoscedasticity)} \textendash\ the variance of the errors is constant across the range of values for the explanatory variable}
+\item{\textbf{Normality of errors} \textendash\ the residuals follow a normal distribution}
+\end{itemize}
+
+Diagnostic plots for the model can be visualized using the \Rfunction{plot} function (figure \ref{fig:lmfitdiag}). The first graph shows the residuals plotted against the fitted values; ideally these should look random without any structure or pattern in the plot. It would be a problem if there was a clear trend of increasing scatter as the fitted values get larger, i.e. violating the assumption of constant variance. The second plot, the Q-Q plot, is also worth looking at as this can highlight problems with non-normality of errors. If the errors are normally distributed this plot should be a straight line. An S-shaped or banana-shaped plot would indicate a need to fit a different model to the data.
+
+<<lmfitdiag, fig.lp="fig:", fig.cap="Diagnostic plots for checking the linear model fitted to the lactoferrin data.">>=
+par(mfrow=c(2,2))
+plot(model)
+@
+
+\subsection{Beyond Simple Linear Regression}
+
+The above introduction to linear regression focuses solely on the simplest case of a linear relationship between a single explanatory variable and the response variable. The relationship often will turn out not to be a straight line in which case we will need to fit a non-linear model. For example, we may attempt to fit a polynomial regression model of the form:
+
+\begin{equation}
+y = a + bx + cx^2
+\end{equation}
+
+In R the model would be written as $y \sim x + x^2$
+
+<<eval=FALSE>>=
+x_squared <- x^2
+quadratic <- lm(y ~ x + x_squared)
+summary(quadratic)
+@
+
+Sometimes we may want to fit a model using more than one explanatory variables. Multiple linear regression involves fitting a linear model of the form:
+
+\begin{equation}
+y = a + bx_1 + cx_2 + dx_3 + ...
+\end{equation}
+
+where $x_1$, $x_2$, $x_3$, etc. are our explanatory variables. The R code for fitting this model is:
+
+<<eval=FALSE>>=
+model <- lm(y ~ x1 + x2 + x3)
+@
+
+For most non-linear models you will need to specify the exact nature of the equation as part of the model formula and use the \Rfunction{nls} function in place of \Rfunction{lm}. You will also need to supply initial guesses for each of the parameters. This can be complicated and is beyond the scope of what we cover here. See \cite{crawley:statsr} for more details.
 
 \bibliography{stats}
 
