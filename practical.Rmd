@@ -202,17 +202,84 @@ pairwise.wilcox.test(bcStats.clean$NewCasesOfBreastCancerIn2002,bcStats.clean$co
     
 # Linear Regression
 
+1. Clinical Trial Data
+
+    a) Import the clinical data from the file `Gem Vmax.txt` 
+    b) Make a scatter plot
+    c) Label each point according to the date that the measurement was made
+    d) Fit a linear model to the data and produce the diagnostic plots. Which observations fit the model least-well? Compare your answers to the scatter plot
+    e) Overlay the line-of-best fit on the scatter plot
+    f) Extract the $R^2$ value from the model summary and print this value on the plot
+    
+```{r fig.height=5,fig.width=5}
+trials <- read.delim("Gem Vmax.txt")
+
+x <- trials$Gemcitabine.Vmax.nmoles.h.ml
+y <- trials$Neutrophils.10.9.L
+plot(x,y,pch=16)
+text(x,y-0.2,labels=1:length(x),cex=0.8)
+```
 
 
-
-```{r}
-mod <- lm(NewCasesOfBreastCancerIn2002~Cholestorol,data=bcStats.clean)
-summary(mod)
+```{r fig.height=6,fig.width=6}
+model <- lm(y ~x )
+summary(model)
+par(mfrow=c(2,2))
+plot(model)
 ```
 
 
 ```{r}
-plot(bcStats.clean$Cholestorol,bcStats.clean$NewCasesOfBreastCancerIn2002,pch=16)
-abline(mod)
+par(mfrow=c(1,1))
+barplot(model$residuals,names=1:length(x),las=2)
+```
+
+
+```{r,fig.height=5,fig.width=7}
+par(mfrow=c(1,1))
+plot(x,y,pch=16)
+points(x,model$fitted.values,pch=16,col="grey")
+arrows(x,model$fitted.values,x,y)
+abline(model,col="red",lty=2)
+text(x,y-0.2,labels=1:length(x),cex=0.8)
+```
+
+
+```{r}
+plot(x,y,pch=16)
+abline(model,col="red",lty=2)
+result <- summary(model)
+r2 <- round(result$adj.r.squared,3)
+my.p = result$coefficients[2,4]
+
+mylabel = bquote(italic(R)^2 == .(format(r2, digits = 3)))
+text(x = 5000, y = 8, labels = mylabel)
+
+```
+
+2. Interpolating Unknown values
+
+```{r}
+assay <- read.delim("Assay.txt")
+model <- lm(micrograms~Optical.Density,data=assay)
+plot(assay$Optical.Density, assay$micrograms)
+abline(model)
+```
+
+
+```{r}
+y <- assay$micrograms
+x <- assay$Optical.Density
+
+topredict <- which(is.na(y))
+new <- data.frame(x = x[which(is.na(y))])
+y[which(is.na(y))] <- predict(lm(y~x), new)
+
+```
+
+```{r}
+cols <- rep("black",length(x))
+cols[topredict] <- "red"
+plot(x,y,pch=16,col=cols)
 ```
 

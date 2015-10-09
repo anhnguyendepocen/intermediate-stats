@@ -1028,29 +1028,20 @@ data <- read.csv("lactoferrin.csv")
 data
 @
 
-Although not strictly necessary, we now use \Rfunction{attach} to make the columns of the data frame accessible by name:
-
-<<>>=
-attach(data)
-names(data)
-conc
-growth
-@
-
-and we can generate something similar to figure \ref{fig:scatterplot} using the \Rfunction{plot} function:
+We can generate something similar to figure \ref{fig:scatterplot} using the \Rfunction{plot} function:
 
 <<eval=FALSE>>=
-plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate")
+plot(data$conc, data$growth, pch=16, xlab="Concentration", ylab="Growth rate")
 @
 
 Figure \ref{fig:scatterplot} shows that there is a roughly linear relationship between growth rate and lactoferrin concentration, with the growth rate decreasing with higher concentrations. We could estimate the parameters of a simple linear model by drawing a line through the data by eye and then calculating it's gradient and seeing where the line passes through the $y$-axis, i.e. the growth rate when the lactoferrin concentration is zero ($x = 0$). The R function \textbf{lm} will do this for us using a mathematical technique known as 'least squares'. Figure \ref{fig:bestfit} shows the resulting line of best fit. Also shown are the \textbf{residuals}, the vertical distances between the actual data points and the line of best fit, i.e. between the observed and fitted values.
 
 <<bestfit, fig.lp="fig:", fig.cap="Line of best fit and residuals.", echo=FALSE>>=
-plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate")
-model <- lm(growth ~ conc)
+with(data, plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate"))
+model <- lm(growth ~ conc,data=data)
 abline(model)
 fitted <- predict(model)
-for (i in 1:10) lines(c(conc[i], conc[i]), c(growth[i], fitted[i]))
+for (i in 1:10) lines(c(data$conc[i], data$conc[i]), c(data$growth[i], fitted[i]))
 @
 
 \subsubsection{Fitting the linear model}
@@ -1074,7 +1065,7 @@ The response variable goes on the left of the tilde and the explanatory variable
 To obtain the parameters of the model, also known as the coefficients, we fit a linear model using the \Rfunction{lm} function:
 
 <<>>=
-model <- lm(growth ~ conc)
+model <- lm(growth ~ conc,data=data)
 model
 @
 
@@ -1095,7 +1086,7 @@ fitted
 The residuals are the differences between the observed values and the fitted values and the 
 
 <<>>=
-residuals <- growth - fitted
+residuals <- data$growth - fitted
 residuals
 @
 
@@ -1145,9 +1136,9 @@ options(digits=4)
 @
 
 <<>>=
-mean_growth <- mean(growth)
+mean_growth <- mean(data$growth)
 mean_growth
-SSY <- sum((growth - mean_growth)^2)
+SSY <- sum((data$growth - mean_growth)^2)
 SSY
 SSR <- sum((fitted - mean_growth)^2)
 SSR
@@ -1156,7 +1147,7 @@ SSE
 @
 
 <<echo=FALSE>>=
-error_variance <- SSE / (length(growth) - 2)
+error_variance <- SSE / (length(data$growth) - 2)
 F_ratio <- SSR / error_variance
 @
 
@@ -1172,9 +1163,9 @@ options(digits=3)
 \hline
 Regression & $SSR = \Sexpr{SSR}$ & 1 & \Sexpr{SSR} & \Sexpr{F_ratio} \\
 \hline
-Error & $SSE = \Sexpr{SSE}$ & \Sexpr{length(growth) - 2} & $s^2 = \Sexpr{error_variance}$ & \\
+Error & $SSE = \Sexpr{SSE}$ & \Sexpr{length(data$growth) - 2} & $s^2 = \Sexpr{error_variance}$ & \\
 \hline
-Total & $SSY = \Sexpr{SSY}$ & \Sexpr{length(growth) - 1} & & \\
+Total & $SSY = \Sexpr{SSY}$ & \Sexpr{length(data$growth) - 1} & & \\
 \hline
 \end{tabular}
 \caption{Anova table for the lactoferrin dataset}
@@ -1192,7 +1183,7 @@ These sources of variation are laid out in an analysis of variance table in tabl
 \mathrm{variance} = \frac{\mathrm{sum\ of\ squares}}{\mathrm{degrees\ of\ freedom}}
 \end{equation}
 
-The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$. The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1.
+The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(data$growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$. The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1.
 
 The value of most interest in table \ref{regression-anova-table} is the error variance, $s^2$.
 
@@ -1205,7 +1196,7 @@ This is used in computing the standard errors in both the slope and intercept (s
 The $F$ ratio is the ratio between the regression variance and the error variance.
 
 <<>>=
-error_variance <- SSE / (length(growth) - 2)
+error_variance <- SSE / (length(data$growth) - 2)
 error_variance
 F_ratio <- SSR / error_variance
 F_ratio
