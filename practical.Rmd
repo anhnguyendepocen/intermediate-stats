@@ -2,11 +2,16 @@
 title: "Further Statistical Analysis using R"
 author: "Mark Dunning, Matthew Eldridge and Sarah Vowler"
 date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
-output: pdf_document
-contents: TRUE
+output:  BiocStyle::pdf_document
+toc: TRUE
 ---
 
 # Introduction
+
+```{r eval=TRUE, echo=F, results="asis"}
+BiocStyle::markdown()
+
+```
 
 
 
