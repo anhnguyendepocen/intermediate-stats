@@ -158,12 +158,12 @@ install.packages(c("tidyr","beeswarm","RColorBrewer","clinfun","RVAideMemoire"))
 @
 
 \subsection{Formatting data for Statistical Testing in R}
-
+\label{dataManip}
 Before conducting a statistical test in R we often need to manipulate our data into a particular format. If you are familiar with working with numerical data in Excel (or similar), then you probably represent your data in tabular format. See Table \ref{messy.eg} for an example taken from the seminal 'Tidy Data' paper by Hadley Wickham \cite{tidyr:paper}.
 
 <<echo=FALSE,results='asis'>>=
 library(xtable)
-messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),treatmenta = c("-",16,3),treatmentb=c(2,11,1))
+messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),treatmenta = c("-",4,6),treatmentb=c(18,1,7))
 print(xtable(messy,label="messy.eg",caption="An imaginary dataset in human-readable format."))
 @
 
@@ -183,7 +183,7 @@ We will now illustrate the how to transform our imaginary dataset into a suitabl
 
 <<>>=
 messy <- data.frame(Name = c("John Smith","Jane Doe","Mary Johnson"),
-                    treatmenta = c(NA,16,3),treatmentb=c(2,11,1))
+                    treatmenta = c(NA,4,6),treatmentb=c(18,1,7))
 @
 
 The function to be used is called \Rfunction{gather} \footnote{Don't forget that you can get help on this function using \Rcode{?gather}}. The function is sometimes able to take a data frame as input and 'guess' what the tidy form of that dataset should look like. Finer control is possible, such as specifying column names in the output. In this example, we specify that we want a column in the output called \Rcode{'treatment'} for our new variable (the key), and \Rcode{'n'} for the corresponding values. The final argument is for specifying which columns in the input data are to be decomposed.
@@ -225,7 +225,7 @@ with(tidy, boxplot(n~treatment))
 ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are three main types of ANOVA: one-way, two-way and repeated measures. In this course our main focus will be on the one-way ANOVA.
 
 \subsection{One-way ANOVA}
-
+\label(oneWayAnova)
 The two-sample t-test is useful when we have just two groups of continuous data to compare, but when we want to compare more than two groups a one-way ANOVA can be used to simultaneously compare all groups rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
 
 A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance} (see Table \ref{anova-table}). 
@@ -301,7 +301,7 @@ Trend test & Test for linear trend between mean and column number \\
 
 \subsubsection{One-way ANOVA Example}
 
-Example: The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}
+The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}
 
 
 <<echo=FALSE,results='asis'>>=
@@ -427,9 +427,9 @@ The post-tests are actually just unpaired t-tests, but the results reported are 
 Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$key["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$key["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$key["B-A","diff"],3)),3)}$.
 
 \subsection{The Kruskal-Wallis test}
-\label{kruskal-wallis}
+\label{kruskalWallis}
 
-This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test.  The Kruskal-Wallis test is derived from the one-way ANOVA, but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test.
+This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test (\ref{medianTest}).  The Kruskal-Wallis test is derived from the one-way ANOVA (\ref{oneWayAnova}), but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test.
 
 \subsubsection{Assumptions}
 
@@ -477,7 +477,7 @@ $N$ = the total sample size}
 
 \subsubsection{Example}
 
-The data are the reduction in weekly headache activity for three treatment groups, expressed as a percentage of the baseline data (example from Altman).
+The data are the reduction in weekly headache activity for three treatment groups, expressed as a percentage of the baseline data (example from Altman \cite{altman}).
 
 <<echo=FALSE,results='asis'>>=
 headache <- matrix(c(62,74,86,74,91,37, 69,43,100,94,100,98, 50,-120,100,-288,4,-76), ncol=3)
@@ -529,7 +529,7 @@ However, $\chi^2_{2,0.05}=5.99,5.69<5.99$. Therefore there is not sufficient evi
 
 \subsubsection{Analysis in R}
 
-A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA are not satisfied and we need to take a non-parametric approach.
+A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA (\ref{anova-assumptions})are not satisfied and we need to take a non-parametric approach.
 
 <<>>=
 headache <- matrix(c(62,74,86,74,91,37, 
@@ -540,7 +540,7 @@ colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Unt
 boxplot(headache)
 @
 
-To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package. We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test.
+To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package (\ref{dataManip}). We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test.
 
 <<>>=
 library(tidyr)
@@ -611,7 +611,7 @@ Note: If $N$ and $k$ are sufficiently large, then $F_r$ can be compared to a $\c
 
 
 \subsubsection{Example}
-The data for this example is taken from Rubin and Peter's paper.  The Friedman test will be used to study whether or not hydralazine would relieve high blood pressure in the lungs.
+The data for this example is taken from Rubin and Peter's paper \cite{rubinPeters}.  The Friedman test will be used to study whether or not hydralazine would relieve high blood pressure in the lungs.
 
 
 <<echo=FALSE,results='asis'>>=
@@ -731,8 +731,8 @@ Friedman’s test, tests the null hypothesis that k related variables come from 
 After establishing a difference between one of the variables, post hoc testing can be carried out to decide which of the variables are actually different.  An appropriate method for allowing for multiple testing must be carried out.
 
 \subsection{Median Test}
-
-Tests whether two or more independent samples are drawn from populations with the same median using the $\chi^2$ statistic.  It can be used when the assumptions of similarity of distributions for the Mann-Whitney U and Kruskal-Wallis tests are not met.
+\label{medianTest}
+Tests whether two or more independent samples are drawn from populations with the same median using the $\chi^2$ statistic.  It can be used when the assumptions of similarity of distributions for the Mann-Whitney U and Kruskal-Wallis (\ref{kruskalWallis}) tests are not met.
 
 \subsubsection{Null Hypothesis}
 
@@ -836,7 +836,7 @@ The Median test has is very straightforward and easy to apply and is particularl
 
 \subsection{Analysis in R}
 
-The median test is implemented in the \CRANpkg{RVAideMemoire} package. As usual we need to tidy the input data frame in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
+The median test is implemented in the \CRANpkg{RVAideMemoire} package. As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
 <<>>=
 library(RVAideMemoire)
 
@@ -855,7 +855,7 @@ mood.medtest(value~key,data=mmse)
 
 \subsection{Jonckheere-Terpstra Test}
 
-Also known as the \textit{test for ordered alternatives} or a \textit{nonparametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test when the groups are ordered.  
+Also known as the \textit{test for ordered alternatives} or a \textit{nonparametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test (\ref{kruskalWallis}) is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test (\ref{kruskalWallis}) when the groups are ordered.  
 
 \subsubsection{Null Hypothesis}
 
