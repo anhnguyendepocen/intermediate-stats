@@ -26,7 +26,7 @@ opts_chunk$set(tidy=FALSE,dev="png",fig.show="as.is",
                message=FALSE,eval=TRUE,warning=FALSE,echo=TRUE)
 ```
 
-The data you need for this practical are available as a zip file. Please download this zip file and extract to a directory on your laptop. You will then need to tell RStudio where to find these files by setting your *working directory*
+The data you need for this practical are available as a [https://rawgit.com/bioinformatics-core-shared-training/intermediate-stats/master/CourseData.zip](zip file). Please download this zip file and extract to a directory on your laptop. You will then need to tell RStudio where to find these files by setting your *working directory*
 
 Session -> Set Working Directory -> Choose Directory
 
@@ -47,11 +47,11 @@ amess <- read.csv("amess.csv")
 dim(amess)
 ```
 
-*NOTE: You can use the `View` function in RStudio to bring-up a display of the object you have created*
+***NOTE: You can use the `View` function in RStudio to bring-up a display of the object you have created***
 
 2. Draw boxplots of the data. Does it look as though the assumptions for ANOVA are satisfied?
 
-NOTE: It is often useful to overlay individual points on the boxplot
+***NOTE: It is often useful to overlay individual points on the boxplot***
 
 ```{r}
 library(beeswarm)
@@ -61,7 +61,8 @@ beeswarm(folate~treatmnt,data=amess,add=TRUE,pch=16)
 
 3. Perform t-tests for each of the three pair-wise comparisons. Make note of the t-test statistics obtained. Which groups, if any, differ from one another?
 
-If you have not performed a t test in R before, you may wish to consult the help page for `t.test`; `?t.test`. 
+***NOTE:If you have not performed a t test in R before, you may wish to consult the help page for `t.test`; `?t.test`. ***
+
 
 ```{r}
 t.test(folate~ treatmnt,data=amess[amess$treatmnt !=3,])
@@ -69,7 +70,9 @@ t.test(folate~treatmnt,data=amess[amess$treatmnt !=2,])
 t.test(folate~treatmnt,data=amess[amess$treatmnt !=3,])
 ```
 
+
 4. Perform an analysis of variance on the data. Why is this a more valid analysis? Interpret the output.
+
 
 ```{r}
 mod <- aov(folate~factor(treatmnt),data=amess)
@@ -77,12 +80,15 @@ mod
 summary(aov(mod))
 ```
 
+
 5. Choose any pair of treatments and repeat the ANOVA for just these two treatments. Compare the test statistic value to the results of the t-test from question 3. What do you notice?
+
 
 ```{r}
 subset <- amess[amess$treatmnt != 3,]
 t.test(folate~treatmnt,data=subset)
 ```
+
 
 6. If the assumptions for ANOVA don’t hold, then there are non-parametric alternatives available. 
 
@@ -113,17 +119,19 @@ pairwise.t.test(amess$folate,amess$treatmnt)
 
 # Other Non-Parametric tests
 
-The file `treatments.txt` records measurements from five subjects undergoing a treatment course. 
+The file `treatments.txt` records measurements from five subjects undergoing a treatment course. The data were taken from an example in *GraphPad Prism*.
 
 1. Import these data into R
 
 ```{r}
 treatments <- read.delim("treatments.txt")
+head(treatments)
 ```
 
-2. Choose an appropriate method to test the effect of treatment
+2. Choose an appropriate method to test the effect of treatment. Interpret the result.
 
 ```{r}
+boxplot(treatments[,-1])
 friedman.test(as.matrix(treatments[,-1]))
 ```
 
@@ -144,14 +152,14 @@ if(!file.exists("genotypes.txt")){
 
 The file `genotypes.txt` contains measurements from a gene expression study. For each patient in the study, their genotype for a particular gene was recorded. 
 
-2. Import the file `genotypes.txt` into R
+3. Import the file `genotypes.txt` into R
 
 ```{r}
 gtypes <- read.delim("genotypes.txt")
 gtypes
 ```
 
-3. Transform the data into two columns; one to indicate the genotype of the individual and the second for the gene expression level. 
+4. Transform the data into two columns; one to indicate the genotype of the individual and the second for the gene expression level. 
 
 
 ```{r}
@@ -160,7 +168,7 @@ gtypes <- gather(gtypes)
 gtypes$key <- rep(c(1,2,3),each=7)
 ```
 
-4. Use an appropriate method to test the association between gene expression and genotype
+5. Use an appropriate method to test the association between gene expression and genotype
 
 ```{r}
 library(clinfun)
@@ -207,24 +215,26 @@ pairwise.wilcox.test(bcStats.clean$NewCasesOfBreastCancerIn2002,bcStats.clean$co
     
 # Linear Regression
 
-1. Clinical Trial Data
+1. Clinical Trial Data: A researcher wished to study the effect of a particular drug X on the immune system. Thus, the concentration of the drug was measured on various days, along with the white blood cell counts.
 
-    a) Import the clinical data from the file `Gem Vmax.txt` 
+    a) Import the clinical data from the file `ClinicalTrials.txt` 
     b) Make a scatter plot
     c) Label each point according to the date that the measurement was made
     d) Fit a linear model to the data and produce the diagnostic plots. Which observations fit the model least-well? Compare your answers to the scatter plot
-    e) Overlay the line-of-best fit on the scatter plot
-    f) Extract the $R^2$ value from the model summary and print this value on the plot
+    e) Overlay the line-of-best fit on the scatter plot. Indicate the differences between each fitted and observed value. 
+    f) Extract the $R^2$ value from the model summary, and print this value on the plot
     
 ```{r fig.height=5,fig.width=5}
-trials <- read.delim("Gem Vmax.txt")
+trials <- read.delim("clinicalTrials.txt")
 
-x <- trials$Gemcitabine.Vmax.nmoles.h.ml
-y <- trials$Neutrophils.10.9.L
-plot(x,y,pch=16)
-text(x,y-0.2,labels=1:length(x),cex=0.8)
+x <- trials$Drug.concentration
+y <- trials$Cell.Count
+
+plot(x,y,cex=0.8)
+text(x,y+0.2,labels=1:length(x))
 ```
 
+***NOTE: We use the `text` function to overlay the number of each observation on-top of the scatter plot that we create initially. `text` requires a set of x and y coordinates. Here we add an offset of 0.2 to make sure the labels are not obscured by the points***
 
 ```{r fig.height=6,fig.width=6}
 model <- lm(y ~x )
@@ -233,22 +243,26 @@ par(mfrow=c(2,2))
 plot(model)
 ```
 
+***NOTE: We modify the plot layout by changing the mfrow parameter to allow for all the diagnostic plots to be shown in the same plotting device***
 
 ```{r}
 par(mfrow=c(1,1))
 barplot(model$residuals,names=1:length(x),las=2)
 ```
 
+***NOTE: The setting of the `las` parameter to 2 arranges the labels so they are perpendicular to the x-axis***
 
 ```{r,fig.height=5,fig.width=7}
 par(mfrow=c(1,1))
 plot(x,y,pch=16)
 points(x,model$fitted.values,pch=16,col="grey")
-arrows(x,model$fitted.values,x,y)
+arrows(x,model$fitted.values,x,y,code=0,col="grey")
 abline(model,col="red",lty=2)
-text(x,y-0.2,labels=1:length(x),cex=0.8)
+text(x,y+0.2,labels=1:length(x),cex=0.8,col="steelblue")
 ```
 
+
+***NOTE: The `arrows` function was used to draw vertical lines on the plot. Each line is defined by a set of starting and ending x and y positions. In this case, we want the start and end positions to be the same and to vary the y coordinates***
 
 ```{r}
 plot(x,y,pch=16)
