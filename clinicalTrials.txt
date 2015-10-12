@@ -1,4 +1,4 @@
-	Neutrophils 10^9/L	Gemcitabine Vmax nmoles/h/ml
+	Cell.Count	Drug.concentration
 01-01	4.30	2882.
 01-02	5.64	4155.
 01-03	5.15	5286.
