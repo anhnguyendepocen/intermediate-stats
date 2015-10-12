@@ -151,12 +151,20 @@ Several Online videos are available that cover this materials. For example
 \end{itemize}
 
 \subsection{R packages Used}
+\label{installPackages}
+In order to run the examples in this manual, and the practical, you will need to execute the following command in R to install the required packages. Or if you prefer, packages can be installed via the \textbf{Packages} tab in RStudio.
 
-In order to run the examples in this manual, and the practical, you will need to execute the following command in R to install the required packages.
 <<eval=FALSE>>=
 install.packages(c("tidyr","beeswarm","RColorBrewer","clinfun","RVAideMemoire"))
 @
 
+You will not need to type this command more than once, so long as you keep the same version of R. Once these packages have been installed, you will need to load each of libraries into R when you require them. e.g.
+
+<<eval=FALSE>>=
+library(tidyr)
+@
+
+Alternatively, packages can be loaded from the "Packages" tab in the lower-right panel of RStudio.
 \subsection{Formatting data for Statistical Testing in R}
 \label{dataManip}
 Before conducting a statistical test in R we often need to manipulate our data into a particular format. If you are familiar with working with numerical data in Excel (or similar), then you probably represent your data in tabular format. See Table \ref{messy.eg} for an example taken from the seminal 'Tidy Data' paper by Hadley Wickham \cite{tidyr:paper}.
@@ -836,7 +844,7 @@ The Median test has is very straightforward and easy to apply and is particularl
 
 \subsection{Analysis in R}
 
-The median test is implemented in the \CRANpkg{RVAideMemoire} package. As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
+The median test is implemented in the \CRANpkg{RVAideMemoire} package (\ref{installPackages}). As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
 <<>>=
 library(RVAideMemoire)
 
@@ -956,7 +964,7 @@ The results of the Jonckheere-Terpstra test show that there is a trend for an in
 
 \subsubsection{Analysis in R}
 
-Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed.
+Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed (\ref{installPackages}).
 
 <<>>=
 library(clinfun)
