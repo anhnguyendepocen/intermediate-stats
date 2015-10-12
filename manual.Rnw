@@ -956,6 +956,8 @@ The results of the Jonckheere-Terpstra test show that there is a trend for an in
 
 \subsubsection{Analysis in R}
 
+Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed.
+
 <<>>=
 library(clinfun)
 grade <- data.frame(Grade1 = c(1.99,3.01,4.17,7.13,9.82,9.91,NA,NA), 
@@ -975,13 +977,13 @@ The main advantage of the Jonckheere-Terpstra test is that unlike the Kruskal-Wa
 The main limitation of the test is that the groups must have a pre-specified or explicit order.  It is not possible to look for an order and then test for a trend.  If there is no explicit order then a Kruskal-Wallis test should be used instead. 
 
 \subsubsection{Summary}
-The Jonckheere-Terpstra test is a more powerful alternative to the Kruskal-Wallis test when there is an explicit order to the groups.  It is a test for trend of increasing medians between the groups.  It is a much under used nonparametric test often the Kruskal-Wallis test is used where it would have been more appropriate to use the Jonckheere-Terpstra test.
+The Jonckheere-Terpstra test is a more powerful alternative to the Kruskal-Wallis test when there is an explicit order to the groups.  It is a test for trend of increasing medians between the groups.  It is a much under-used nonparametric test; often the Kruskal-Wallis test is used where it would have been more appropriate to use the Jonckheere-Terpstra test.
 
 \subsubsection{Summary of Several Independent Samples}
 
 In this section, five tests for use when the independent variable has more than two groups have been covered.  The Chi-Square test and the Mantel-Haenszel test are to be used when the dependent variable is categorical.  The Median and Kruskal-Wallis tests are to be used when the dependent variable is continuous but there is no order to the groups.  The Jonckheere-Terpstra test is more powerful if there is an order to the groups. 
 
-If the assumptions of the Kruskal-Wallis test are satisfied, it is more powerful to use this test than the Median Test.  That is the Kruskal-Wallis test is more likely to correctly reject the null hypothesis.  
+If the assumptions of the Kruskal-Wallis test (\ref{kruskalWallis}) are satisfied, it is more powerful to use this test than the Median Test (\ref{medianTest}).  That is the Kruskal-Wallis test (\ref{kruskalWallis}) is more likely to correctly reject the null hypothesis.  
 
 \section{Regression}
 
@@ -997,7 +999,7 @@ data <- read.csv("lactoferrin.csv")
 plot(data, pch=16, xlab="Concentration", ylab="Growth rate")
 @
 
-An example of a dataset where regression analysis might be applied is shown in figure \ref{fig:scatterplot}. This shows the results of a dose-response experiment where an \textit{E. coli} strain was exposed to various concentrations of the growth inhibitor, lactoferrin. In this example, we are interested in how the growth rate varies with concentration and a regression analysis would be suitable. Regression analysis involves fitting a model to the data that attempts to describe the relationship between the response and explanatory variables, in this case the growth rate and concentration.
+An example of a dataset where regression analysis might be applied is shown in Figure \ref{fig:scatterplot}. This shows the results of a dose-response experiment where an \textit{E. coli} strain was exposed to various concentrations of the growth inhibitor, lactoferrin. In this example, we are interested in how the growth rate varies with concentration and a regression analysis would be suitable. Regression analysis involves fitting a model to the data that attempts to describe the relationship between the response and explanatory variables, in this case the growth rate and concentration.
 
 There are several types of regression analysis \textemdash\ which you use will depend on the number of explanatory variables and the type of model to be fitted.
 
@@ -1021,7 +1023,7 @@ where $y$ is the response variable and $x$ is a continuous explanatory variable.
 
 \subsubsection{The lactoferrin dataset}
 
-Let's go back to our example dataset in figure \ref{fig:scatterplot}, showing the effect of lactoferrin concentration on the growth rate of \textit{E. coli}. We can read the data into R using the \Rfunction{read.csv} function:
+Let's go back to our example dataset in Figure \ref{fig:scatterplot}, showing the effect of lactoferrin concentration on the growth rate of \textit{E. coli}. We can read the data into R using the \Rfunction{read.csv} function:
 
 <<>>=
 data <- read.csv("lactoferrin.csv")
@@ -1034,7 +1036,7 @@ We can generate something similar to figure \ref{fig:scatterplot} using the \Rfu
 plot(data$conc, data$growth, pch=16, xlab="Concentration", ylab="Growth rate")
 @
 
-Figure \ref{fig:scatterplot} shows that there is a roughly linear relationship between growth rate and lactoferrin concentration, with the growth rate decreasing with higher concentrations. We could estimate the parameters of a simple linear model by drawing a line through the data by eye and then calculating it's gradient and seeing where the line passes through the $y$-axis, i.e. the growth rate when the lactoferrin concentration is zero ($x = 0$). The R function \textbf{lm} will do this for us using a mathematical technique known as 'least squares'. Figure \ref{fig:bestfit} shows the resulting line of best fit. Also shown are the \textbf{residuals}, the vertical distances between the actual data points and the line of best fit, i.e. between the observed and fitted values.
+Figure \ref{fig:scatterplot} shows that there is a roughly linear relationship between growth rate and lactoferrin concentration, with the growth rate decreasing with higher concentrations. We could estimate the parameters of a simple linear model by drawing a line through the data by eye and then calculating it's gradient and seeing where the line passes through the $y$-axis, i.e. the growth rate when the lactoferrin concentration is zero ($x = 0$). The R function \Rfunction{lm} will do this for us using a mathematical technique known as \textit{'least squares'}. Figure \ref{fig:bestfit} shows the resulting line of best fit. Also shown are the \textbf{residuals}, the vertical distances between the actual data points and the line of best fit, i.e. between the observed and fitted values.
 
 <<bestfit, fig.lp="fig:", fig.cap="Line of best fit and residuals.", echo=FALSE>>=
 with(data, plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate"))
@@ -1177,7 +1179,7 @@ options(digits=4)
 @
 
 
-These sources of variation are laid out in an analysis of variance table in table \ref{regression-anova-table}. The mean squares column contains values for the variance for each source, calculated as:
+These sources of variation are laid out in an analysis of variance table in T  able \ref{regression-anova-table}. The mean squares column contains values for the variance for each source, calculated as:
 
 \begin{equation}
 \mathrm{variance} = \frac{\mathrm{sum\ of\ squares}}{\mathrm{degrees\ of\ freedom}}
@@ -1185,7 +1187,7 @@ These sources of variation are laid out in an analysis of variance table in tabl
 
 The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(data$growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$. The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1.
 
-The value of most interest in table \ref{regression-anova-table} is the error variance, $s^2$.
+The value of most interest in Table \ref{regression-anova-table} is the error variance, $s^2$.
 
 \begin{equation}
 s^2 = \frac{SSE}{n - 2}
@@ -1240,7 +1242,7 @@ Aside from the assumption that there is a linear relationship between the explan
 \item{\textbf{Normality of errors} \textendash\ the residuals follow a normal distribution}
 \end{itemize}
 
-Diagnostic plots for the model can be visualized using the \Rfunction{plot} function (figure \ref{fig:lmfitdiag}). The first graph shows the residuals plotted against the fitted values; ideally these should look random without any structure or pattern in the plot. It would be a problem if there was a clear trend of increasing scatter as the fitted values get larger, i.e. violating the assumption of constant variance. The second plot, the Q-Q plot, is also worth looking at as this can highlight problems with non-normality of errors. If the errors are normally distributed this plot should be a straight line. An S-shaped or banana-shaped plot would indicate a need to fit a different model to the data.
+Diagnostic plots for the model can be visualized using the \Rfunction{plot} function (Figure \ref{fig:lmfitdiag}). The first graph shows the residuals plotted against the fitted values; ideally these should look random without any structure or pattern in the plot. It would be a problem if there was a clear trend of increasing scatter as the fitted values get larger, i.e. violating the assumption of constant variance. The second plot, the Q-Q plot, is also worth looking at as this can highlight problems with non-normality of errors. If the errors are normally distributed this plot should be a straight line. An S-shaped or banana-shaped plot would indicate a need to fit a different model to the data.
 
 <<lmfitdiag, fig.lp="fig:", fig.cap="Diagnostic plots for checking the linear model fitted to the lactoferrin data.">>=
 par(mfrow=c(2,2))
