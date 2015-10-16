@@ -601,7 +601,7 @@ This is a non-directional alternative hypothesis.  If the alternative hypothesis
 \begin{itemize}
 \item{1. Construct the null and alternative hypotheses.}
 \item{2. Construct a two-way table with N (the number of subjects or matched sets of subjects) rows and k (the number of conditions or data collection periods) columns.}
-\item{3. Rank each row from lowest to highest and sum ranks in each column.}
+\item{3. Rank each persons' score from lowest to highest and sum ranks in each column.}
 \item{4. If the null hypothesis is not true then the sum of the columns will vary from column to column.  The Friedman test examines the extent to which these column sums vary from what is expected using the following formula:
 \begin{equation}
 F_r = \frac{12}{Nk(k+1)}\sum_j R^2_j - 3N(k+1)
