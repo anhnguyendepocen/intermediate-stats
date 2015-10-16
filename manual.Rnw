@@ -1050,7 +1050,7 @@ Figure \ref{fig:scatterplot} shows that there is a roughly linear relationship b
 with(data, plot(conc, growth, pch=16, xlab="Concentration", ylab="Growth rate"))
 model <- lm(growth ~ conc,data=data)
 abline(model)
-fitted <- predict(model)
+fitted <- fitted(model)
 for (i in 1:10) lines(c(data$conc[i], data$conc[i]), c(data$growth[i], fitted[i]))
 @
 
@@ -1059,7 +1059,7 @@ for (i in 1:10) lines(c(data$conc[i], data$conc[i]), c(data$growth[i], fitted[i]
 The aim is to minimize the sum of squares of the residuals (also known as the error sum of squares, \textbf{SSE}), i.e. to find the minimum of
 
 \begin{equation}
-SSE = \sum(y - a - bx)^2
+SSE = \sum_i(y_i - a - bx_i)^2
 \end{equation}
 
 Mathematically, we set the derivative of this function with respect to the slope to zero, do the same for the derivative with respect to the intercept, and then solve the resultant simultaneous equations. This is left as an exercise for the more mathematically inclined, or see "Statistics: An Introduction using R" by Michael Crawley \cite{crawley:statsr}.
@@ -1075,7 +1075,7 @@ The response variable goes on the left of the tilde and the explanatory variable
 To obtain the parameters of the model, also known as the coefficients, we fit a linear model using the \Rfunction{lm} function:
 
 <<>>=
-model <- lm(growth ~ conc,data=data)
+model <- lm(growth ~ conc, data=data)
 model
 @
 
@@ -1086,21 +1086,37 @@ plot(data, pch=16, xlab="Concentration", ylab="Growth rate")
 abline(model)
 @
 
-and the \Rfunction{predict} function will give us the fitted values for each data point:
+and the \Rfunction{fitted} function will give us the fitted values for each data point:
 
 <<>>=
-fitted <- predict(model)
+fitted <- fitted(model)
 fitted
 @
 
-The residuals are the differences between the observed values and the fitted values and the 
+The residuals are the differences between the observed values and the fitted values:
 
 <<>>=
 residuals <- data$growth - fitted
 residuals
 @
 
+Coefficient, residuals and other properties of the model can be obtained using a number of useful functions (see box) or accessed directly through the model object:
+
+<<>>=
+coefficients(model)
+residuals(model)
+names(model)
+model$coefficients
+model$residuals
+@
+
 A noteable property of linear regression is that the line of best fit passes through the point $(\bar{x}, \bar{y})$ where $\bar{x}$ and $\bar{y}$ are the mean values of x and y respectively. 
+
+<<>>=
+mean(data$conc)
+mean(data$growth)
+model$coefficients[1] + model$coefficients[2] * mean(data$conc)
+@
 
 \subsubsection{Calculating standard errors in the regression parameters}
 
@@ -1178,7 +1194,7 @@ Error & $SSE = \Sexpr{SSE}$ & \Sexpr{length(data$growth) - 2} & $s^2 = \Sexpr{er
 Total & $SSY = \Sexpr{SSY}$ & \Sexpr{length(data$growth) - 1} & & \\
 \hline
 \end{tabular}
-\caption{Anova table for the lactoferrin dataset}
+\caption{ANOVA table for the lactoferrin dataset}
 \label{regression-anova-table}
 \end{table}
 
@@ -1212,7 +1228,7 @@ F_ratio <- SSR / error_variance
 F_ratio
 @
 
-This can be used to test for a non-zero slope in the linear regression, where the null hypothesis is that the slope is zero, i.e. there is no dependence of the response variable on the explanatory variable. The Anova table and $p$ value for the test are computed in R by calling the \Rfunction{summary.aov} function:
+This can be used to test for a non-zero slope in the linear regression, where the null hypothesis is that the slope is zero, i.e. there is no dependence of the response variable on the explanatory variable. The ANOVA table and $p$ value for the test are computed in R by calling the \Rfunction{anova} function:
 
 <<>>=
 summary.aov(model)
@@ -1224,6 +1240,42 @@ The \Rfunction{summary} function shows the estimated slope and intercept paramet
 
 <<>>=
 summary(model)
+@
+
+The output includes the standard errors for both the concentration coefficient (slope) and intercept.
+
+The coefficients, errors and various statistics can be accessed directly through the summary object returned by the \Rfunction{summary} function or using the \Rfunction{coefficients} function passing the summary object.
+
+<<>>=
+summary <- summary(model)
+names(summary)
+summary$fstatistic
+coefficients(summary)
+summary$coefficients
+summary$coefficients[1,2]
+@
+
+Also given is the residual error; this is the square root of the error variance we calculated earlier.
+
+<<>>=
+summary$sigma
+sqrt(error_variance)
+@
+
+Confidence intervals on the model coefficients are calculated from the $t$-value and the standardd error. Recall that in Student's $t$-distribution, values of $t$ are the numbers of standard errors to be expected with specified probability and for a given number of degrees of freedom.
+
+\begin{equation}
+\mathrm{confidence\ interval} = t\mathrm{-value} \times \mathrm{standard\ error}
+\end{equation}
+
+\begin{equation}
+CI_{95\%} = t_{(\alpha=0.025,\mathrm{d.f.}=8)} \times \mathrm{s.e.}
+\end{equation}
+
+In R, the \Rfunction{confint} function computes the confidence intervals for the parameters of a model:
+
+<<>>=
+confint(model, level = 0.95)
 @
 
 \subsubsection{Measuring the degree of fit}
@@ -1239,7 +1291,12 @@ r_squared <- SSR / SSY
 r_squared
 @
 
-This varies from 1 when the regression explains all of the variation in $y$ (all the observed points lie on the line of best fit, $SSR = SSY$ and $SSE = 0$) to 0 when the regression explains none of the variation ($SSE = SSY$, $SSR = 0$). The square root of this quantity, $r$, is the correlation coefficient.
+This varies from 1 when the regression explains all of the variation in $y$ (all the observed points lie on the line of best fit, $SSR = SSY$ and $SSE = 0$) to 0 when the regression explains none of the variation ($SSE = SSY$, $SSR = 0$). The square root of this quantity, $r$, is the correlation coefficient (Pearson's product-moment correlation).
+
+<<>>=
+cor.test(data$growth, data$conc)
+cor(data$growth, data$conc) ^ 2
+@
 
 \subsubsection{Checking the model assumptions}
 
@@ -1247,6 +1304,7 @@ Aside from the assumption that there is a linear relationship between the explan
 
 \begin{itemize}
 \item{\textbf{Constant variance (homoscedasticity)} \textendash\ the variance of the errors is constant across the range of values for the explanatory variable}
+\item{\textbf{Independence of errors} \textendash\ the errors in the response variables are uncorrelated with other}
 \item{\textbf{Normality of errors} \textendash\ the residuals follow a normal distribution}
 \end{itemize}
 
@@ -1256,6 +1314,8 @@ Diagnostic plots for the model can be visualized using the \Rfunction{plot} func
 par(mfrow=c(2,2))
 plot(model)
 @
+
+Outliers may have a strong influence on the fitted slope and intercept. The residuals vs. leverage plot shows labeled points that represent cases that may need investigating as potentially having undue influence on the regression relationship (cases 2, 8 and 9 in our example dataset).
 
 \subsection{Beyond Simple Linear Regression}
 
