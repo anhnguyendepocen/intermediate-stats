@@ -1062,7 +1062,25 @@ The aim is to minimize the sum of squares of the residuals (also known as the er
 SSE = \sum_i(y_i - a - bx_i)^2
 \end{equation}
 
-Mathematically, we set the derivative of this function with respect to the slope to zero, do the same for the derivative with respect to the intercept, and then solve the resultant simultaneous equations. This is left as an exercise for the more mathematically inclined, or see "Statistics: An Introduction using R" by Michael Crawley \cite{crawley:statsr}.
+More formally, the regression model is written as:
+
+\begin{equation}
+y_i = a + bx_i + \varepsilon_i
+\end{equation}
+
+where $\varepsilon_i$ is the error term and is assumed to be normally distributed:
+
+\begin{equation}
+\varepsilon_i \sim \mathcal{N}(0, \sigma^2)
+\end{equation}
+
+and the error sum of squares is:
+
+\begin{equation}
+SSE = \sum_i\varepsilon_i^2 = \sum_i(y_i - a - bx_i)^2
+\end{equation}
+
+Mathematically, we set the derivative of this function with respect to the slope to zero ($dSSE/db = 0$), do the same for the derivative with respect to the intercept ($dSSE/da = 0$), and then solve the resultant simultaneous equations. This is left as an exercise for the more mathematically inclined, or see "Statistics: An Introduction using R" by Michael Crawley \cite{crawley:statsr}.
 
 In R, the tilde symbol, '$\sim$', is used in describing a model and can be read as 'is modelled as a function of'. In our example, the model would be written:
 
@@ -1209,7 +1227,9 @@ These sources of variation are laid out in an analysis of variance table in T  a
 \mathrm{variance} = \frac{\mathrm{sum\ of\ squares}}{\mathrm{degrees\ of\ freedom}}
 \end{equation}
 
-The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(data$growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$. The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1.
+The number of degrees of freedom is determined by considering the number of parameters estimated from the data for each sum of squares. For the total sum of squares, $SSY = \sum(y - \bar{y})^2$, there is just one parameter estimated from the data: the mean value, $\bar{y}$. So we have $n - 1$ degrees of freedom, where $n$ is the number of observations (\Sexpr{length(data$growth)} in this example). Similarly, in order to calculate the error sum of squares, $SSE = \sum(y - \hat{y})^2 = \sum(y - a - bx)^2$, we need to know the values of two parameters, $a$ and $b$. These are estimated from the data, so the number of degrees of freedom are $n - 2$.
+
+The number of degrees of freedom for the regression is more difficult to understand but if we consider that the regression degrees of freedom and the error degrees of freedom should add up to the total number of degrees of freedom, then we can see that this value must be 1. In the regression model, the fitted line is specified by two parameters, the slope and the intercept. But the fitted line needs to go through the mean of the response variable. This fixes the intercept and leaves just one degree of freedom for estimating the slope of the line.
 
 The value of most interest in Table \ref{regression-anova-table} is the error variance, $s^2$.
 
@@ -1231,7 +1251,7 @@ F_ratio
 This can be used to test for a non-zero slope in the linear regression, where the null hypothesis is that the slope is zero, i.e. there is no dependence of the response variable on the explanatory variable. The ANOVA table and $p$ value for the test are computed in R by calling the \Rfunction{anova} function:
 
 <<>>=
-summary.aov(model)
+anova(model)
 @
 
 \subsubsection{Summarizing the linear model}

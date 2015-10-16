@@ -15,9 +15,9 @@ BiocStyle::markdown()
 
 
 
-In this practical, we will use several ’read-life’ datasets to demonstrate some of the concepts you have
+In this practical, we will use several ’real-life’ datasets to demonstrate some of the concepts you have
 seen in the lectures. We will guide you through how to analyse these datasets in R and the kinds
-of questions you should be asking yourself when faced with similar data. As this is not a course in using R, we will provide the R code that you will need. However, it is up to you to think carefully about the assumptions of a statistics tests and interpret the results that R gives
+of questions you should be asking yourself when faced with similar data. As this is not a course in using R, we will provide the R code that you will need. However, it is up to you to think carefully about the assumptions of a statistics tests and interpret the results that R gives.
 
 ```{r knitr, echo=FALSE, results="hide"}
 library("knitr")
