@@ -105,7 +105,8 @@ library(RVAideMemoire)
 mood.medtest(folate~factor(treatmnt),data=amess)
 ```
 
-7. Use a *post-hoc* test to compute p-value for all pairwise contrasts. Unlike the t-tests performed in Question 3, the p-values returned are adjusted for multiple testing. Two functions for doing such tests in R are `TukeyHSD` and `pairwise.t.test`. Help for both these functions is available through RStudio; `?TukeyHSD`, `?pairwise.t.test`
+7. Use a *post-hoc* test to compute p-value for all pairwise contrasts. Unlike the t-tests performed in Question 3, the p-values returned here are adjusted for multiple testing. Two functions for doing such tests in R are `TukeyHSD` and `pairwise.t.test`. Help for both these functions is available through RStudio; `?TukeyHSD`, `?pairwise.t.test`
+
 
 ```{r}
 TukeyHSD(mod)
@@ -121,14 +122,15 @@ pairwise.t.test(amess$folate,amess$treatmnt)
 
 The file `treatments.txt` records measurements from five subjects undergoing a treatment course. The data were taken from an example in *GraphPad Prism*.
 
-1. Import these data into R
+1. Import these data into R and visualise the distribution of the data
 
 ```{r}
 treatments <- read.delim("treatments.txt")
 head(treatments)
 ```
 
-2. Choose an appropriate method to test the effect of treatment. Interpret the result.
+
+2. Use the Friedman test to assess the effect of treatment and interpret the result. Can you justify why this test was chosen?
 
 ```{r}
 boxplot(treatments[,-1])
@@ -150,14 +152,17 @@ if(!file.exists("genotypes.txt")){
 
 ```
 
-The file `genotypes.txt` contains measurements from a gene expression study. For each patient in the study, their genotype for a particular gene was recorded. 
+The file `genotypes.txt` contains measurements from patients in a gene expression study. For each patient in the study, their genotype for a particular gene was recorded. 
 
-3. Import the file `genotypes.txt` into R
+3. Import the file `genotypes.txt` into R and visualise the data using a boxplot
 
 ```{r}
 gtypes <- read.delim("genotypes.txt")
 gtypes
+boxplot(gtypes)
 ```
+
+***NOTE: The boxplot function is also able to accept a data frame as input. In this case, it will plot the distribution of data in each column separately***
 
 4. Transform the data into two columns; one to indicate the genotype of the individual and the second for the gene expression level. 
 
@@ -189,7 +194,7 @@ head(bcStats)
 ```
 
     
-2.  Visualise the distribution of breast cancer incidence in each continent. Include a way of identifying how many observations belong to each group (continent)
+2.  Visualise the distribution of breast cancer incidence in each continent. Include a way of identifying how many observations belong to each group (continent). Are there any groups that you would consider removing?
 
 ```{r}
 library(RColorBrewer)
