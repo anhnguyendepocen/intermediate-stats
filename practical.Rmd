@@ -226,8 +226,9 @@ pairwise.wilcox.test(bcStats.clean$NewCasesOfBreastCancerIn2002,bcStats.clean$co
     b) Make a scatter plot
     c) Label each point according to the date that the measurement was made
     d) Fit a linear model to the data and produce the diagnostic plots. Which observations fit the model least-well? Compare your answers to the scatter plot
-    e) Overlay the line-of-best fit on the scatter plot. Indicate the differences between each fitted and observed value. 
-    f) Extract the $R^2$ value from the model summary, and print this value on the plot
+    e) Use the output of the linear model to express the equation of the line of best-fit in the form $y=ax+b$
+    f) Overlay the line-of-best fit on the scatter plot. Indicate the differences between each fitted and observed value. 
+    g) Extract the $R^2$ value from the model summary, and print this value on the plot
     
 ```{r fig.height=5,fig.width=5}
 trials <- read.delim("clinicalTrials.txt")
@@ -283,12 +284,21 @@ text(x = 5000, y = 8, labels = mylabel)
 
 2. Interpolating Unknown values
 
+A standard curve is a graph relating a measured quantity (Optical Density in this example) to concentration of the substance of interest in "known" samples.  A researcher has prepared and assayed "known" samples containing the substance in amounts chosen to span the range of concentrations that you expect to find in the "unknown" samples. These data are in the file `Assay.txt`
+
+    a) Read the file `Assay.txt' and make a scatter plot of  Concentration ('y') versus Optical Density ('x')
+    b) Fit a linear model to the data and show the results on the scatter plot
+    c) Use this linear model to predict values for the 'unknown' concentrations
+    d) Overlay your newly-predicted points on the scatter plot from a)
+    
 ```{r}
 assay <- read.delim("Assay.txt")
 model <- lm(micrograms~Optical.Density,data=assay)
+summary(model)
 plot(assay$Optical.Density, assay$micrograms)
 abline(model)
 ```
+
 
 
 ```{r}
@@ -298,8 +308,9 @@ x <- assay$Optical.Density
 topredict <- which(is.na(y))
 new <- data.frame(x = x[which(is.na(y))])
 y[which(is.na(y))] <- predict(lm(y~x), new)
-
 ```
+
+
 
 ```{r}
 cols <- rep("black",length(x))
