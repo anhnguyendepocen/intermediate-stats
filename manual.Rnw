@@ -233,7 +233,7 @@ with(tidy, boxplot(n~treatment))
 ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are three main types of ANOVA: one-way, two-way and repeated measures. In this course our main focus will be on the one-way ANOVA.
 
 \subsection{One-way ANOVA}
-\label(oneWayAnova)
+\label{oneWayAnova}
 The two-sample t-test is useful when we have just two groups of continuous data to compare, but when we want to compare more than two groups a one-way ANOVA can be used to simultaneously compare all groups rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
 
 A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance} (see Table \ref{anova-table}). 
@@ -662,7 +662,7 @@ fr <-  friedman.test(as.matrix(rubinPeters[,-1]))
 
 $F_r = \frac{12}{\Sexpr{N} \times \Sexpr{k}(\Sexpr{k} + 1)}[\Sexpr{R1}^2 + [\Sexpr{R2}^2 + \Sexpr{R3}^2] - [3 \times \Sexpr{N}(\Sexpr{k}+1)] = \Sexpr{fr$statistic}$
 
-As \Sexpr{fr$statistic} is the same as the value in the table there is sufficient evidence to reject the null hypothesis and conclude that at least one group is different from the others.
+As \Sexpr{fr$statistic} is the same as the value in the Friedman's distribution table there is sufficient evidence to reject the null hypothesis and conclude that at least one group is different from the others.
 
 \subsubsection{Analysis in R}
 We create a data frame representation in R, and produce the boxplot:-
