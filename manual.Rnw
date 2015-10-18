@@ -1017,7 +1017,10 @@ There are several types of regression analysis \textemdash\ which you use will d
 \item{\textbf{Polynomial regression} \textendash\ used to test for non-linearity in a relationship}
 \item{\textbf{Non-linear regression} \textendash\ to fit a specified non-linear model to the data}
 \item{\textbf{Non-parametric regression} \textendash\ used when there is no obvious functional form}
+\item{\textbf{Logistic regression} \textendash when the response variable is a nominal (or categorical) variable}
 \end{itemize}
+
+There are many other techniques that can be used when there are three or more measurement variables, including principal components analysis, hierarchical and non-hierarchical clustering, and multidimensional scaling.
 
 \subsection{Linear Regression}
 
@@ -1364,7 +1367,7 @@ y = a + bx + cx^2
 In R the model would be written \Rcode{y \textasciitilde x + I(x\textasciicircum 2)} where the \Rfunction{I} function is needed to treat the \Rcode{x\textasciicircum 2} term 'as is' (note that the \Rcode{\textasciicircum} symbol has a different meaning in the R syntax for specifying a model).
 
 <<decay, fig.lp="fig:", fig.cap="Radioactive decay data set.", fig.width=5, fig.height=5, fig.align='center', echo=FALSE>>=
-data <- read.csv("decay.csv")
+data <- read.delim("decay.txt")
 x <- data$x
 y <- data$y
 plot(x, y, pch=16, xlim=c(0, 33), ylim=c(0, 155))
@@ -1447,18 +1450,39 @@ where $x_1$, $x_2$, $x_3$, etc. are our explanatory variables. The R code for fi
 model <- lm(y ~ x1 + x2 + x3)
 @
 
-The quadratic function we fitted above to radioactive decay data is an example of multiple linear regression.
+The quadratic function we fitted above to the radioactive decay data is an example of multiple linear regression.
 
-TODO: example and pairs plot
+Where there are multiple explanatory variables, interaction terms can be added to the model, for example
 
-TODO: caution about overfitting, multicollinearity
+\begin{equation}
+y = a + bx_1 + cx_2 + dx_1x_2
+\end{equation}
 
-TODO: interaction terms, forward/backward selection
+This is specified in R using the ':' symbol:
 
+<<eval=FALSE>>=
+model <- lm(y ~ x1 + x2 + x1 : x2)
+@
+
+or more succinctly:
+
+<<eval=FALSE>>=
+model <- lm(y ~ x1 * x2)
+@
+
+where the '*' symbol indicates inclusion of the explanatory variables and interactions, not multiplication.
+
+Care must be taken not to overfit when creating a multiple regression model for a dataset containing many explanatory variables, particularly if interactions terms are used in constructing the model.
+
+Models can be built up by starting from a simple model with few explanatory variables and adding additional explanatory variables, or we could simplify a very complicated model containing all explanatory variables and interaction terms by iteratively reducing non-signficant terms. These approaches are known as forward selection and backward selection respectively.
+
+Another assumption of multiple regression is that the explanatory variables are not multicollinear. Multicollinearity occurs when two independent variables are highly correlated with each other. If the goal of building the model is prediction, multicollinearity is not that important. However, if the goal is to understand the factors that cause the variation in the response variable, this can lead to some confusion. For example, our model may suggest that an explanatory variable is the leading cause of the variation in the response variable but in reality it is not causative but highly correlated with another explanatory variable that is the actual cause.
 
 \subsubsection{Using nominal variables in a multiple regression}
 
-TODO
+Nominal (or categorical) variables can be used in multiple regression. For example, a multiple regression model that attempts to predict blood pressure from explanatory variables such as height, weight, age and the number of hours of exercise per week, might also include sex. In this case, we would create a variable in which every female has a value of 0 and every male a value of 1.
+
+Where there are multiple values of a nominal variable, or multiple categories, some care is required. The usual technique is to create $k - 1$ dummy variables, where $k$ is the number of values that the nominal variable can take. For example, if the blood pressure study included socio-economic status as a nominal variable with 5 values, we would create 4 dummy variables representing the first four statuses. For an observation in one of those 4 socio-economic classes, we would set the corresponding dummy variable to 1 and all others to 0. For an observation in the fifth class, we would set all dummy variables to 0.
 
 \subsubsection{Non-linear models}
 
