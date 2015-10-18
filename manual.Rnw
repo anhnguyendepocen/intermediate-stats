@@ -537,7 +537,7 @@ However, $\chi^2_{2,0.05}=5.99,5.69<5.99$. Therefore there is not sufficient evi
 
 \subsubsection{Analysis in R}
 
-A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA (\ref{anova-assumptions})are not satisfied and we need to take a non-parametric approach.
+A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA (\ref{anova-assumptions}) are not satisfied and we need to take a non-parametric approach.
 
 <<>>=
 headache <- matrix(c(62,74,86,74,91,37, 
@@ -842,7 +842,7 @@ $ = 0.667 + 0.167 + 0.167 + 0.8 + 0.2 + 0.2 = 2.20 $
 
 The Median test has is very straightforward and easy to apply and is particularly useful when the exact values of the scores (especially those at the extremes) are unknown.  The test only considers two states for the scores, above and below (or equal to) the median and does not take the size of the differences into account.  Therefore, the Median test is less powerful than the Mann-Whitney U and Kruskal-Wallis tests.
 
-\subsection{Analysis in R}
+\subsubsection{Analysis in R}
 
 The median test is implemented in the \CRANpkg{RVAideMemoire} package (\ref{installPackages}). As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
 <<>>=
