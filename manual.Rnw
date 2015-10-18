@@ -1461,7 +1461,7 @@ y = a + bx_1 + cx_2 + dx_1x_2
 This is specified in R using the ':' symbol:
 
 <<eval=FALSE>>=
-model <- lm(y ~ x1 + x2 + x1 : x2)
+model <- lm(y ~ x1 + x2 + x1:x2)
 @
 
 or more succinctly:
