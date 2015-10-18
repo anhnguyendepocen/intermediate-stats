@@ -1,0 +1,473 @@
+---
+title: "Linear Regression"
+author: "Matt Eldridge"
+date: "19 October 2015"
+output: beamer_presentation
+header-includes:
+     - \usepackage{longtable}
+---
+
+## Regression analysis
+
+- Statistical methods for modelling the relationship between 2 or more variables
+
+- One of the variables is the **response** (or **dependent**) variable
+
+- The other variables are the **explanatory** (or **independent**) variables
+
+- Both response and explanatory variables are continuous, i.e. real numbers with decimal places (weights, intensities, growth rates)
+
+## Uses of regression analysis
+
+1. Understanding the functional relationships between the dependent variable and the independent variables
+
+2. Predicting or estimating the unknown value of the dependent variable for given values of the independent variables
+
+## Is regression analysis appropriate for your data?
+
+What is the most natural way of plotting your data?
+
+- XY scatter plot $\Rightarrow$ regression
+
+- Box plot $\Rightarrow$ ANOVA, $t$-test or non-parametric equivalent
+
+Have you obtained measurements of some quantity at various conditions?
+
+## Lactoferrin data set
+
+- Dose-response experiment where an \textit{E. coli} strain was exposed to various concentrations of the growth inhibitor, lactoferrin
+
+```{r echo=FALSE, fig.width=8}
+data <- read.csv("lactoferrin.csv")
+plot(data, pch = 16)
+```
+
+## Types of regression analysis
+
+- **Linear regression** -- one response variable and one explanatory variable where the relationship can be described through a linear model
+
+- **Multiple linear regression** -- fits a linear model using multiple explanatory variables
+
+- **Polynomial regression** -- used to test for non-linearity in a relationship
+
+- **Non-linear regression** -- to fit a specified non-linear model to the data
+
+- **Non-parametric regression** -- used when there is no obvious functional form
+
+- **Logistic regression** - when the response variable is a nominal (or categorical) variable
+
+## Pollution data set
+
+```{r echo=FALSE}
+data <- read.csv("pollution.csv")
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- abs(cor(x, y))
+    txt <- format(c(r, 0.123456789), digits = digits)[1]
+    txt <- paste0(prefix, txt)
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+pairs(data, lower.panel = panel.smooth, upper.panel = panel.cor)
+```
+
+## Linear regression
+
+- Only one explanatory variable and one response variable
+
+- Fits the simplest model of all, a straight line, to the data
+
+$$y = ax + b$$
+
+- $a$ is the slope (or gradient) of the straight line
+
+- $b$ is the intercept, i.e. the value of $y$ when $x$ is 0.
+
+- This is known as a **linear model**
+
+## Straight line fit for the lactoferrin data set
+
+```{r echo=FALSE, fig.width=8}
+data <- read.csv("lactoferrin.csv")
+plot(data, pch = 16)
+model <- lm(growth ~ conc, data = data)
+abline(model)
+```
+
+## Residuals
+
+- The residuals are the differences between the actual and the fitted values
+
+```{r echo=FALSE, fig.height=6}
+plot(data, pch = 16)
+model <- lm(growth ~ conc, data = data)
+abline(model)
+fitted <- fitted(model)
+for (i in 1:10) lines(c(data$conc[i], data$conc[i]), c(data$growth[i], fitted[i]))
+```
+
+- Choose the straight line that minimizes the square of these differences (this is known as 'least squares')
+
+## Fitting the linear model
+
+The formal way to write the linear model is:
+
+$$y_i = a + bx_i + \varepsilon_i$$
+
+- $y$ is the response variable, e.g. the value that was measured
+- $x$ is the explanatory variable, e.g. the condition that was varied
+- $i$ indicates the $i$-th observation
+- $\varepsilon$ is the error term which is assumed to be normally distributed
+
+$$\varepsilon_i \sim \mathcal{N}(0, \sigma^2)$$
+
+## Fitting the linear model
+
+- Error sum of squares, $SSE$
+
+$$SSE = \sum_i\varepsilon_i^2 = \sum_i(y_i - a - bx_i)^2$$
+
+Mathematically, we set the derivative of this function with respect to the slope to zero ($dSSE/db = 0$), do the same for the derivative with respect to the intercept ($dSSE/da = 0$), and then solve the resulting simultaneous equations.
+
+## Linear regression in R
+
+- The tilde symbol, $\sim$, is used in describing a model in R
+
+- We describe the linear relationship between growth rate and concentration as
+
+$$growth \sim conc$$
+
+- This can be read as 'growth is modelled as a function of concentration'
+
+## Reading the data in R
+
+```{r echo=FALSE}
+options(digits=3)
+```
+
+```{r}
+data <- read.csv("lactoferrin.csv")
+data
+```
+
+<!--
+```{r echo=FALSE, results='asis'}
+library(xtable)
+print(xtable(data), include.rownames=FALSE, comment=FALSE, tabular.environment='longtable', floating=FALSE)
+```
+-->
+
+Alternatively, use the 'Import Dataset' function in RStudio.
+
+## Fitting the linear model
+
+```{r}
+model <- lm(growth ~ conc, data = data)
+model
+```
+
+## Plotting the line of best fit
+
+```{r}
+plot(data, xlab="Concentration", ylab="Growth rate")
+abline(model)
+```
+
+## Useful functions
+
+```{r}
+coefficients(model)
+fitted(model)
+```
+
+```{r}
+residuals(model)
+```
+
+## Standard errors for the model coefficients
+
+- Need to know how reliable are our estimates of the regression parameters (slope and intercept)
+
+- Depends on the error variance, $s^2$
+
+$$\mathrm{variance}, s^2 = \frac{\mathrm{sum\ of\ squares}}{\mathrm{degrees\ of\ freedom}}$$
+
+- Perform an analysis of variance.
+
+## Error variance in regression
+
+- Total variation in $y$, represented by the total sum of squares of $y$, $SSY$ is:
+
+$$SSY = \sum_i(y_i - \bar{y})^2$$
+
+- $\bar{y}$ is the mean value of $y$
+
+- $SSY$ can be partitioned into separate components for the variation that is explained by the model, $SSR$, and the unexplained variation that is the error sum of squares, $SSE$
+
+$$SSY = SSR + SSE$$
+
+## Error variance in regression
+
+$$SSY = SSR + SSE = \sum_i(y_i - \bar{y})^2$$
+
+$$SSE = \sum_i(y_i - \hat{y}_i)^2$$
+
+$$SSR = \sum_i(\hat{y}_i - \bar{y}_i)^2$$
+
+- $\hat{y}$ are the fitted values of the response variable
+
+$$\hat{y}_i = a + bx_i$$
+
+<!--
+## Computing $SSY$, $SSR$ and $SSE$ in R
+
+```{r}
+x <- data$conc
+y <- data$growth
+
+SSY <- sum((y - mean(y))^2)
+SSY
+SSR <- sum((fitted(model) - mean(y))^2)
+SSR
+SSE <- sum((y - fitted(model))^2)
+SSE
+```
+-->
+
+## ANOVA table for regression
+
+```{r echo=FALSE}
+options(digits=2)
+error_variance <- SSE / (length(data$growth) - 2)
+F_ratio <- SSR / error_variance
+```
+
+\begin{table}
+\centering
+\begin{tabular}{| l | l | c | c | c |}
+\hline
+\textbf{Source} & \textbf{Sum of squares} & \textbf{d.f.} & \textbf{Mean Squares} & \textbf{$F$ ratio} \\
+\hline
+Regression & $SSR = `r SSR`$ & 1 & `r SSR` & `r F_ratio` \\
+\hline
+Error & $SSE = `r SSE`$ & `r length(data$growth) - 2` & $s^2 = `r error_variance`$ & \\
+\hline
+Total & $SSY = `r SSY`$ & `r length(data$growth) - 1` & & \\
+\hline
+\end{tabular}
+\end{table}
+
+```{r echo=FALSE}
+options(digits=3)
+```
+
+- The **degrees of freedom** (d.f.) depend on how many parameters have been estimated from the data in calculating the sum of squares
+
+- For $SSY = \sum_i(y_i - \bar{y})^2$, one parameter is fixed, the mean value of $y$, so we have $n - 1$ degrees of freedom.
+
+- For $SSE = \sum_i(y_i - a - bx_i)^2$, we need to know $a$ and $b$, so we have $n - 2$ degrees of freedom.
+
+## Analysis of variance in R
+
+```{r}
+anova(model)
+```
+
+## Summarizing the model
+
+```{r}
+summary(model)
+```
+
+## Confidence intervals for the model coefficients
+
+```{r}
+confint(model, level = 0.95)
+```
+
+$$\mathrm{confidence\ interval} = t\mathrm{-value} \times \mathrm{standard\ error}$$
+
+$$CI_{95\%} = t_{(\alpha=0.025,\mathrm{d.f.}=8)} \times \mathrm{s.e.}$$
+
+## Measuring the degree of fit
+
+- Output from `summary` function includes a value for $r^2$, a measure of the degree of fit
+
+- $r^2$ is the fraction of the total variation in the response variable that is explained by the regression
+
+$$r^2 = \frac{SSR}{SSY}$$
+
+- $r^2$ varies from 0, when the regression explains none of the variation, to 1, when the regression explains all the variation
+
+- $r$ is Pearson's product-moment correlation coefficient
+
+<!--
+```{r}
+SSR / SSY
+```
+-->
+
+## Measuring the degree of fit
+
+```{r}
+cor.test(data$growth, data$conc)
+```
+
+## Model assumptions
+
+- **Linear relationship** between explanatory and response variable
+
+- **Constant variance (homoscedasticity)** -- variance of the errors is constant across the range of values for the explanatory variable
+
+- **Independence of errors** -- the errors in the response variables are uncorrelated with other
+
+- **Normality of errors** -- the residuals follow a normal distribution
+
+## Checking the model assumptions
+
+```{r eval=FALSE}
+plot(model)
+```
+
+```{r echo=FALSE}
+par(mfrow=c(2,2))
+plot(model)
+```
+
+## Radioactive decay data set
+
+```{r echo=FALSE}
+data <- read.delim("decay.txt")
+plot(data, pch = 16)
+model <- lm(y ~ x, data = data)
+abline(model)
+```
+
+## Radioactive decay data set
+
+```{r echo=FALSE}
+plot(model, which = c(1))
+```
+
+## Assessing for non-linearity
+
+**Polynomial regression** can be used to check for non-linearity in the relationship between the explanatory and response variable
+
+- Add a quadratic term, $x^2$, to the model
+
+$$y = a + bx + cx^2$$
+
+This is still a linear model even though the relationship is non-linear
+
+- Check for significance of the additional term
+
+```{r eval=FALSE}
+model <- lm(y ~ x + I(x^2), data = data)
+summary(model)
+```
+
+## Assessing for non-linearity
+
+```{r echo=FALSE}
+quadratic <- lm(y ~ x + I(x^2), data = data)
+summary(quadratic)
+```
+
+## Quadratic regression model
+
+```{r echo=FALSE}
+x <- data$x
+y <- data$y
+plot(x, y, pch=16, xlim=c(0, 39), ylim=c(0, 155))
+xv <- seq(0, 40, 0.1)
+yv <- predict(quadratic, data.frame(x = xv))
+lines(xv, yv)
+```
+
+## Fitting an exponential function
+
+- An exponential decay function might be a better fit for our radioactive decay data
+
+$$y = ae^{-bx}$$
+
+- Some models can be **linearized** by **transforming** the exploratory or response variable
+
+- In this case, take logarithms
+
+$$\ln(y) = \ln(a) - bx$$
+
+```{r eval=FALSE}
+model <- lm(log(y) ~ x, data = data)
+summary(model)
+```
+
+## Fitting an exponential function
+
+```{r echo=FALSE}
+exponential <- lm(log(y) ~ x, data = data)
+summary(exponential)
+```
+
+## Fitted models for the radioactive decay data
+
+```{r echo=FALSE}
+plot(x, y, pch=16, xlim=c(0, 33), ylim=c(0, 155))
+lines(xv, yv)
+yv2 <- exp(predict(exponential, data.frame(x = xv)))
+lines(xv, yv2, col="red")
+```
+
+## Multiple regression
+
+- When there are 2 or more explanatory variables
+
+$$y = a + bx_1 + cx_2 + dx_3 + ...$$
+
+```{r eval=FALSE}
+model <- lm(y ~ x1 + x2 + x3)
+```
+
+- Can include interaction terms
+
+$$y = a + bx_1 + cx_2 + dx_1x_2$$
+
+```{r eval=FALSE}
+model <- lm(y ~ x1 + x2 + x1:x2)
+```
+
+- Care needed to avoid overfitting
+
+## Non-linear regression
+
+- If a specific mechanistic model lends itself to the data that takes the form of a non-linear equation (one that cannot be linearized by transformation), e.g.
+
+$$y = a - be^{-cx}$$
+
+- Use the ```nls``` library in R
+
+- Specify the model explicitly
+
+- Need to provide initial guesses for the parameters
+
+```{r eval=FALSE}
+library(nls)
+model <- nls(y ~ a - b * exp(-c * x),
+             start = list(a = 50, b = 100, c = 0.05))
+```
+
+## Summary
+
+- Regression analysis models the relationships between explanatory variable(s) and a response variable
+
+- Linear regression involves fitting a straight line of best fit by minimizing the sum of squares of the residuals ('least squares')
+
+- The model fit can be assessed using diagnostic plots (residuals vs fitted, QQ-plot, etc.)
+
+- Add quadratic terms to the linear model to check for non-linearity in the relationship
+
+- Some non-linear functions, e.g. exponential decays, can be linearized by transformation, otherwise can use non-linear regression
+
+Michael J. Crawley *'Statistics: An Introduction using R'*, Second Edition (Wiley, 2014)
+
