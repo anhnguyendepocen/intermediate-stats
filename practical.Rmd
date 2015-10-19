@@ -204,7 +204,7 @@ beeswarm(NewCasesOfBreastCancerIn2002~continent,data=bcStats,add=TRUE,pch=16)
 bcStats.clean <- bcStats[bcStats$continent != "Oceania",]
 ```
 
-3. Would a parameteric, or non-parametric, approach be suitable for this analysis? Use the result from a `bartlett.test` to support you answer
+3. Would a parameteric, or non-parametric, approach be suitable for this analysis? Use the result from a `bartlett.test` to support you answer.
 Proceed with your chosen approach to test the hypothesis that breast cancer incidence is different across the globe
 
 ```{r}
@@ -284,12 +284,13 @@ text(x = 5000, y = 8, labels = mylabel)
 
 2. Interpolating Unknown values
 
-A standard curve is a graph relating a measured quantity (Optical Density in this example) to concentration of the substance of interest in "known" samples.  A researcher has prepared and assayed "known" samples containing the substance in amounts chosen to span the range of concentrations that you expect to find in the "unknown" samples. These data are in the file `Assay.txt`
+A standard curve is a graph relating a measured quantity (Optical Density in this example) to concentration of the substance of interest in "known" samples.  A researcher has prepared and assayed "known" samples containing the substance in amounts chosen to span the range of concentrations that you expect to find in the "unknown" samples. These data are in the file `Assay.txt`.
 
-    a) Read the file `Assay.txt' and make a scatter plot of  Concentration ('y') versus Optical Density ('x')
+    a) Read the file `Assay.txt` and make a scatter plot of  Concentration ('y') versus Optical Density ('x')
     b) Fit a linear model to the data and show the results on the scatter plot
     c) Use this linear model to predict values for the 'unknown' concentrations
     d) Overlay your newly-predicted points on the scatter plot from a)
+    
     
 ```{r}
 assay <- read.delim("Assay.txt")
