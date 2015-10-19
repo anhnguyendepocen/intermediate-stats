@@ -68,16 +68,16 @@ It's always a good idea to calculate some summary statistics for your data, such
 
 There are four key steps in every statistical test:
 \begin{itemize}
-\item{1 Formulate a \textbf{null hypothesis}, H$_0$. This is the working hypothesis that we wish to disprove.}
+\item{1. Formulate a \textbf{null hypothesis}, H$_0$. This is the working hypothesis that we wish to disprove.}
 \item{2. Under the assumption that the \textbf{null hypothesis} is true, calculate a \textbf{test statistic} from the data.}
-\item{3. Determine whether the \textbf{test statistic} is more extreme than we would expect under the \textbf{null hypothesis}, i.e. look at the \textbf{p-value}.}
+\item{3. Determine whether the \textbf{test statistic} is more extreme than we would expect under the \textbf{null hypothesis}, i.e. look at the \textbf{$p$-value}.}
 \item{4. Reject or do not reject the \textbf{null hypothesis}.}
 \end{itemize}
 As the name suggests, the null hypothesis typically corresponds to a \textbf{null} effect. 
 
-For example, there is \textbf{no difference} in the measurements in group 1 compared with group 2. A small p-value indicates that the probability of observing such a test statistic as small under the assumption that the null hypothesis is true. If the p-value is below a pre-specified \textbf{significance level}, then this is a \textbf{significant result} and, we would conclude, there is evidence to reject the null hypothesis.
+For example, there is \textbf{no difference} in the measurements in group 1 compared with group 2. A small $p$-value indicates that the probability of observing such a test statistic as small under the assumption that the null hypothesis is true. If the $p$-value is below a pre-specified \textbf{significance level}, then this is a \textbf{significant result} and, we would conclude, there is evidence to reject the null hypothesis.
 
-The \textbf{significance level} is most commonly set at 5\% and may also be thought of as the \textbf{false positive rate}. That is, there is a 5\% chance that the null hypothesis is true for data-sets with test statistics corresponding to p-values of less than 0.05 – i.e. we may wrongly reject the null hypothesis when the null hypothesis is true (false positive).
+The \textbf{significance level} is most commonly set at 5\% and may also be thought of as the \textbf{false positive rate}. That is, there is a 5\% chance that the null hypothesis is true for data-sets with test statistics corresponding to $p$-values of less than 0.05 – i.e. we may wrongly reject the null hypothesis when the null hypothesis is true (false positive).
 
 <<echo=FALSE,fig.show='asis',fig.height=5,fig.width=10,warning=FALSE,message=FALSE>>=
 
@@ -94,15 +94,15 @@ normdist <- ggplot() +   geom_histogram(data = dat, aes(x))+  geom_rect(data = r
 normdist
 @
 
-Equally, we may make \textbf{false negative} conclusions from statistical tests. In other words, we may not reject the null hypothesis when the null hypothesis is, in fact, not true. When referring to the false negative rate, statisticians usually refer to \textbf{power}, which is 1-false negative rate. 
+Equally, we may make \textbf{false negative} conclusions from statistical tests. In other words, we may not reject the null hypothesis when the null hypothesis is, in fact, not true. However, statisticians tend not to talk about false negative rates, preferring instead to refer to \textbf{power}, which is 1-false negative rate. 
 
 The \textbf{power} of a statistical test will depend on:
 
 \begin{itemize}
 \item{The \textbf{significance level} - a 5\% test of significance will have a greater chance of rejecting the null than a 1\% test because the strength of evidence required for rejection is less.}
-\item{The \textbf{sample size} – the larger the sample size, the more accurate our estimates (e.g. of the mean) which means we can differentiate between the null and alternative hypotheses more clearly.}
-\item{The \textbf{size of the difference or effect} we wish to detect – bigger differences (i.e. alternative hypotheses) are easier to detect than smaller differences.}
-\item{The \textbf{variability}, or standard deviation, of the observations – the more variable our observations, the less accurate our estimates which means it is more difficult to differentiate between the null and alternative hypotheses.}
+\item{The \textbf{sample size} - the larger the sample size, the more accurate our estimates (e.g. of the mean) therefore, we can differentiate between the null and alternative hypotheses more clearly.}
+\item{The \textbf{size of the difference or effect} we wish to detect - bigger differences (i.e. alternative hypotheses) are easier to detect than smaller differences.}
+\item{The \textbf{variability}, or standard deviation, of the observations - the more variable our observations, the less accurate our estimates therefore, it is more difficult to differentiate between the null and alternative hypotheses.}
 \end{itemize}
 
 
@@ -234,7 +234,7 @@ ANOVA stands for \textit{an}alysis \textit{o}f \textit{v}ariance. There are thre
 
 \subsection{One-way ANOVA}
 \label{oneWayAnova}
-The two-sample t-test is useful when we have just two groups of continuous data to compare, but when we want to compare more than two groups a one-way ANOVA can be used to simultaneously compare all groups rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
+The two-sample t-test is useful when we have just two groups of continuous data to compare. When we want to compare more than two groups, a one-way ANOVA can be used to simultaneously compare all groups, rather than carrying out several individual two-sample t-tests.  The main advantage of doing this is that it reduces the number of tests being carried out, meaning that the type I error rate (the probability of seeing a significant result just by chance) does not become inflated. 
 
 A one-way ANOVA compares group means by partitioning the variation in the data into \textbf{between group} variance and \textbf{within group variance} (see Table \ref{anova-table}). 
 
@@ -260,33 +260,36 @@ Total & $N - 1 $ & TSS = BSS + WSS & & $\frac{S^2_B}{S^2_W}$\\
 The between group variance is divided by the within group variance to give an F statistic. This tells us the ratio of between group variation to within group variation. A large F-value implies that there are significant differences between groups and conversely a small F-value implies there are not significant differences between groups. Giving this a little bit of thought, the idea becomes more intuitive:
 
 \begin{itemize}
-\item{If the variance within groups is small, but between groups the variance is very large, we can infer that there are likely to be differences between groups. Following this theory, the F statistic is calculated by dividing the between group variation by the within group variation. So in this scenario, we divide a large number by a comparatively small number and this leaves us with a large(ish) number for our F statistic, corresponding to a small p-value.}
+\item{If the variance within groups is small, but between groups the variance is very large, we can infer that there are likely to be differences between groups. Following this theory, the F statistic is calculated by dividing the between group variation by the within group variation. So in this scenario, we divide a large number by a comparatively small number and this leaves us with a large(ish) number for our F statistic, corresponding to a small $p$-value.}
 \item{If the variance within groups is large, but between groups the variance is also large, it is more difficult to know whether the groups truly differ in their mean value. In this scenario, the F statistic is calculated by dividing a large number by another large number - depending on the relative size of these two large numbers we may be left with a large or small number for our F statistic. The same is true when the variance within and between groups are both small.}
-\item{Finally, if the variance within group is large, but between groups the variance is very small, we can infer that there are unlikely to be differences between groups. In this scenario, the F statistic is calculated by dividing a small number by a large number and this will result in a small(ish) number for our F statistic, corresponding to a large p-value.}
+\item{Finally, if the variance within group is large, but between groups the variance is very small, we can infer that there are unlikely to be differences between groups. In this scenario, the F statistic is calculated by dividing a small number by a large number and this will result in a small(ish) number for our F statistic, corresponding to a large $p$-value.}
 \end{itemize}
-Luckily, you won’t need to do the calculations from Table \ref{anova-table} by hand as R will do these all for you, but it’s good to have an appreciation of what the test is actually doing in the background.
+Luckily, you won't need to do the calculations from Table \ref{anova-table} by hand as R will do these all for you, but it's good to have an appreciation of what the test is actually doing in the background.
 
-Obviously the outcome of the one-way ANOVA depends on the data available. If there is high variation in the data, a much larger sample will be needed to detect a difference between groups. Likewise, if we are interested in detecting very small differences between groups a larger sample size will be required. 
+Obviously the outcome of the one-way ANOVA depends on the data available. If there is high variation in the data, a much larger sample size will be needed to detect a difference between groups. Likewise, if we are interested in detecting very small differences between groups a larger sample size will also be required. 
 
 \subsubsection{ANOVA assumptions}
 \label{anova-assumptions}
 There are several assumptions behind the one-way ANOVA:
 
 \begin{itemize}
+\item{Random selection of observations}
 \item{Normally distributed response (assessed for each group separately)}
 \item{Approximately equal variance across the groups}
 \item{Independent observations}
 \end{itemize}
-The main assumption is that the distribution of the response variable should be normally distributed for each group being compared. This can be assessed prior to fitting the ANOVA by constructing a histogram of the response variable for each group being compared. This can also be assessed after fitting the ANOVA by constructing a normal probability plot of the residuals (sometimes called a Q-Q plot).
+Like most statistical tests, ANOVA assumes that there is a random selection of observations from the population of interest. If this is not the case then any results obtained from the test on the sample of observations may not generalise to the population as a whole. 
+
+The main assumption of ANOVA is that the distribution of the response variable should be normally distributed for each group being compared. This can be assessed prior to fitting the ANOVA by constructing a histogram of the response variable for each group being compared. This can also be assessed after fitting the ANOVA by constructing a normal probability plot of the residuals (sometimes called a QQ-plot).
 
 Another important assumption is that there is approximately equal variance across the groups being compared. This assumption is important because of the way the F-test in the ANOVA uses the pooled variance across groups. If one group has a much larger variance than another group, the results of the F-test may not be valid. The equal variance assumption can be assessed using either Bartlett's or Levene's test (REMEMBER! this adds to the multiple testing problem), or visually using a histogram plotted separately for each group. 
 
-A third assumption of the one-way ANOVA is the independence of observations. There is no easy way of assessing independence, so a lot of people overlook this assumption. However, a little thought about where the data comes from and how it was collected can give us a good indication of whether the observations are independent or not. Things like taking observations from related individuals or having multiple measurements per subject will cause the independence assumption to be invalid.
+The final assumption of the one-way ANOVA is the independence of observations. There is no easy way of assessing independence, so a lot of people overlook this assumption. However, a little thought about where the data comes from and how it was collected can give us a good indication of whether the observations are independent or not. Things like taking observations from related individuals or having multiple measurements per subject will cause the independence assumption to be invalid. You should ask the question "is there any reason why any of the measurements are more likely to be similar than any others?" If the answer is no then it is safe to assume independence of observations.
 
-If the F-test provides a significant result, we may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the effect size. This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing and R has several options to do this. There are several different types of multiple-testing adjustment than can be made, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-test}.  
+When the F-test provides a significant result, it tells us that there is at least one difference in the groups. However, it does not tell us group is different. We may be interested in making comparisons between pairs of groups to identify where the difference lies and estimate the size of the difference (the effect size). This can be done by using unpaired two-sample t-tests. If we wish to make multiple comparisons we must be careful to adjust for multiple testing. R provides several different types of multiple-testing adjustment, each suiting different types of comparisons. These are discussed in more detail in the section \ref{choosing-the-correct-post-hoc-test}.  
 
-\subsubsection{Choosing the correct post-test}
-\label{choosing-the-correct-post-test}
+\subsubsection{Choosing the correct post-hoc test}
+\label{choosing-the-correct-post-hoc-test}
 
 \begin{table}[h]
 
@@ -300,7 +303,7 @@ Bonferroni & Compare all pairs of columns OR compare selected pairs of columns \
 \hline
 Dunnett & Compare all columns vs. control column \\
 \hline
-Trend test & Test for linear trend between mean and column number \\
+Trend test & Test for linear trend in means across columns \\
 \hline 
 \end{tabular}
 \caption{Multiple-testing adjustment methods}
@@ -309,7 +312,7 @@ Trend test & Test for linear trend between mean and column number \\
 
 \subsubsection{One-way ANOVA Example}
 
-The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}
+The protein expression level was measured in 5 cell types from a single cell line. We want to know whether there are any differences in the expression level between the five different cell types. The raw data are given in Table \ref{protdata}. These data come from the Babraham Bioinformatics course \href{http://www.bioinformatics.babraham.ac.uk/training.html#prism}{\color{blue}{Statistical Analysis using GraphPad Prism}}.
 
 
 <<echo=FALSE,results='asis'>>=
@@ -346,13 +349,13 @@ boxplot(proteinData,xlab="Cell Type",ylab="Protein Expression",main="Protein Exp
 beeswarm(proteinData, add=TRUE,pch=16,col=brewer.pal(5,"Set1"),method="swarm")
 @
 
-\bioccomment{The \CRANpkg{RColorBrewer} package is also used to define a colour pallette for the dataset.}
+\bioccomment{The \CRANpkg{RColorBrewer} package is also used to define a colour palette for the dataset.}
 
-Figure \ref{fig:boxplot} shows us that the median value varies between the five groups. We can also see that the data is skewed for cell types A and D, as the bar in the middle, which shows the median, is not equally between the two outer bars, which show the lower and upper quartiles. In addition, there are extreme values present for cell types C and D. We can also see that protein expression levels in some groups are much more variable than in others; the protein expression levels in group B are very consistent, but for groups C, D and E they are much more varied. 
+Figure \ref{fig:boxplot} shows us that the median value varies between the five groups. We can also see that the data is skewed for cell types A and D, as the bar in the middle, which shows the median, is not equally between the two outer bars, which show the lower and upper quartiles. In addition, there are extreme values (indicated by the dots above the boxplot) present for cell types C and D. We can also see that protein expression levels in some groups are much more variable than in others; the protein expression levels in group B are very consistent, but for groups C, D and E they are much more varied. 
 
 
 
-We can make a similar assessment of the data using a histogram (plotted separately for each group in our dataset). See Figure \ref{fig:hist1}. In particular we can use these histograms to make an assessment of normality and constant variance which are two of the assumptions behind ANOVA (Section \ref{anova-assumptions}). 
+We can make a similar assessment of the data using histograms (plotted separately for each group in our dataset). See Figure \ref{fig:hist1}. In particular we can use these histograms to make an assessment of normality and constant variance which are two of the assumptions behind ANOVA (Section \ref{anova-assumptions}). Note the difference in the range of the x-axis on the different plots. 
 
 <<hist1, fig.lp="fig:",fig.cap="Histogram of the protein expression levels for five cell types">>=
 par(mfrow=c(2,3))
@@ -375,7 +378,7 @@ head(proteinData.ln)
 
 \bioccomment{If you are not sure what the \Rfunction{log} is doing, don't forget that you can bring-up the help page: \Rcode{?log}}
 
-Hopefully the transformation will result in normally distributed data. To check this, create another histogram in the same way you did on the untransformed data (See Figure \ref{fig:hist2})
+Hopefully the transformation will result in data that are normally distributed enough to meet the normality assumption. To check this, create another set of histograms in the same way you did on the untransformed data (See Figure \ref{fig:hist2})
 
 <<hist2, fig.lp="fig:",fig.cap="Histogram of the natural-log-transformed protein expression levels for five cell types">>=
 par(mfrow=c(2,3))
@@ -392,7 +395,7 @@ Figure \ref{fig:hist2} now shows that most of the cell types are approximately n
 
 When perfoming linear regression or ANOVA in R, it is more convenient to transform our data into \textbf{long} format, which can be done using the \Rcode{gather} function from the package \CRANpkg{tidyr}. For comprehensive descriptions of data manipulation and tidy data, see Hadley Wickham's paper \cite{tidyr:paper} or video \cite{tidyr:video} on the subject. 
 
-Once we have transformed our data, the \Rfunction{aov} function fits the analysis of variance model to our data. Diagnostic plots of the model fit can be visualised using the \Rfunction{plot} function (Figure \ref{fig:anova-fit}). Of the most interest is the QQ-plot, which allows us to assess whether the distribution of the response variable should is normally distributed for each group being compared.
+Once we have transformed our data, the \Rfunction{aov} function fits the analysis of variance model to our data. Diagnostic plots of the model fit can be visualised using the \Rfunction{plot} function (Figure \ref{fig:anova-fit}). Of the most interest is the QQ-plot, which allows us to assess whether the distribution of the response variable is sufficiently normally distributed for each group being compared.
 
 <<anova-fit, fig.lp="fig:",fig.cap="Visualising the results of the ANOVA model">>=
 library(tidyr)
@@ -411,7 +414,7 @@ summary(aov(mod))
 @
 
 
-One of the assumptions of the one-way ANOVA, which we have already explored with our scatter plot, is that the variances in each of the five groups are approximately equal. We can formally test this assumption when carrying out a one-way ANOVA, using a Bartlett's test. The results provide a p-value indicating whether equal variance can be assumed, with a value less than 0.05 suggesting that equal variance should not be assumed. 
+One of the assumptions of the one-way ANOVA, which we have already explored with our scatter plot, is that the variances in each of the five groups are approximately equal. We can formally test this assumption when carrying out a one-way ANOVA, using a Bartlett's test (although its use is cautioned due to multiple testing issues). The results provide a $p$-value indicating whether equal variance can be assumed, with a value less than 0.05 suggesting that equal variance should not be assumed. Note that if log-tranformed data are being used for ANOVA, the Bartlett's test should also be performed on the logged data. 
 
 <<>>=
 bt <- bartlett.test(value~key,data=anovaData)
@@ -420,9 +423,9 @@ bt
 
 
 
-In this example, the p-value was \Sexpr{round(bt$p.value,3)}, so there is no evidence to suggest that the variances in each of the five groups aren't approximately equal to each other. If the Bartlett's test gives a significant p-value, we cannot assume equal variances across the groups and a non-parametric test, such as the Kruskal-Wallis test, should be used instead of a one-way ANOVA.
+In this example, the $p$-value was \Sexpr{round(bt$p.value,3)}, so there is no evidence to suggest that the variances in each of the five groups aren't approximately equal to each other. If the Bartlett's test gives a significant $p$-value, we cannot assume equal variances across the groups and a non-parametric test, such as the Kruskal-Wallis test, should be used instead of a one-way ANOVA.
 
-The equal variance assumption is reasonable in this example, so we can go ahead and use the one-way ANOVA to analyse the data. The results of the one-way ANOVA provide a p-value of $<0.0001$ which is statistically significant. This suggests that there is evidence of a difference in the mean log-transformed protein expression levels between two or more of the five cell types. As the result of the one-way ANOVA was significant, we may be interested in making further comparisons between pairs of groups, and we can do this with the post- test results. Note: if the one-way ANOVA result had not been significant we would usually stop here and not look at the post-test results.
+The equal variance assumption (on the log-tranformed data) is reasonable in this example, so we can go ahead and use the one-way ANOVA to analyse the data. The results of the one-way ANOVA provide a $p$-value of $<0.0001$ which is statistically significant. This suggests that there is evidence of a difference in the mean log-transformed (or geometric mean of the original) protein expression levels between two or more of the five cell types. As the result of the one-way ANOVA was significant, we may be interested in making further comparisons between pairs of groups, and we can do this with the post-hoc test results. Note: if the one-way ANOVA result had not been significant we would usually stop here and not look at the post-hoc test results.
 
 <<>>=
 post.tests<- TukeyHSD(mod)
@@ -430,14 +433,14 @@ post.tests
 @
 
 
-The post-tests are actually just unpaired t-tests, but the results reported are adjusted for multiple testing. In this example, we want to compare all pairs of groups, but sometimes there may be specific groups that you wish to compare. You should plan your comparisons before starting your analysis and it is better, at least from a statistical angle, to perform the least number of comparisons that will sufficiently answer your question(s). As we want to perform more than one t-test on this data (in fact we are performing 10 pairwise comparisons!), we must be careful to adjust for multiple testing. Here we see that there is a significant difference between cell types A v D (p value: \Sexpr{post.tests$key["D-A","p adj"]}), a very significant difference between cell types B v E (p value: \Sexpr{post.tests$key["E-B","p adj"]}) and C v D (p value: \Sexpr{post.tests$key["D-C","p adj"]}), and an extremely significant difference between cell types B v D (p value: \Sexpr{post.tests$key["D-B","p adj"]}). 
+The post-hoc tests are actually just unpaired t-tests, but the results reported are adjusted for multiple testing. In this example, we want to compare all pairs of groups, but sometimes there may be specific groups that you wish to compare. You should plan your comparisons before starting your analysis and it is better, at least from a statistical viewpoint, to perform the least number of comparisons that will sufficiently answer your question(s). As we want to perform more than one t-test on this data (in fact we are performing 10 pairwise comparisons!), we must be careful to adjust for multiple testing. Here we see that there is a significant difference between cell types A v D (p value: \Sexpr{post.tests$key["D-A","p adj"]}), a very significant difference between cell types B v E (p value: \Sexpr{post.tests$key["E-B","p adj"]}) and C v D (p value: \Sexpr{post.tests$key["D-C","p adj"]}), and an extremely significant difference between cell types B v D (p value: \Sexpr{post.tests$key["D-B","p adj"]}). 
 
-Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$key["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$key["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$key["B-A","diff"],3)),3)}$.
+Just because a result is statistically significant does not mean that it is biologically or clinically important. You can refer to the mean difference column to judge whether a difference of the size seen in the data is likely to be of biological or clinical importance, but remember that these values are now on the natural log (ln) scale! You can transform back to the original scale by taking the exponential of the mean difference: in this example, the mean difference between B and D is \Sexpr{round(post.tests$key["D-B","diff"],3)} on the natural log scale. On the original scale this translates to $e^{\Sexpr{round(post.tests$key["D-B","diff"],3)}}  = \Sexpr{round(exp(1)^(round(post.tests$key["B-A","diff"],3)),3)}$, this is now the difference in geometric rather than the usual arithmetic means.
 
 \subsection{The Kruskal-Wallis test}
 \label{kruskalWallis}
 
-This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test (\ref{medianTest}).  The Kruskal-Wallis test is derived from the one-way ANOVA (\ref{oneWayAnova}), but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test.
+This tests if $k$ independent samples are drawn from the same population.  As the Kruskal-Wallis test ranks the values, it is more powerful than the Median test (\ref{medianTest}), which only looks at direction of differences.  The Kruskal-Wallis test is derived from the one-way ANOVA (\ref{oneWayAnova}), but uses ranks rather than actual observations.  It is also the extension of the Mann-Whitney U test to greater than two groups. However, it will provide the same result as the Mann-Whitney U test if carried out on two groups. 
 
 \subsubsection{Assumptions}
 
@@ -445,7 +448,7 @@ The assumptions of the Kruskal-Wallis test are:
 
 \begin{itemize}
 \item{1. The data have been collected from a randomly selected set of observations.}
-\item{2. The dependent variable is at least at the ordinal level of measurement.}
+\item{2. The dependent variable is at least at the ordinal level of measurement, i.e. the data are able to be ranked.}
 \item{3. There are more than two independent groups.}
 \item{4. There is independence of observations within each group and between the groups.  There are no repeated measures or multiple response categories.}
 \item{5. The shapes of the distributions of the groups are similar.}
@@ -456,14 +459,16 @@ The assumptions of the Kruskal-Wallis test are:
 If the last assumption holds then the hypotheses are:
 
 $H_0$: The medians in the $k$ groups are equal.
+
 $H_A$: There is a difference in medians between the $k$ groups.
 
 If the last assumption does not hold:
 
-$H_0$: The $k$ groups have the same shape and location
+$H_0$: The $k$ groups have the same shape and location.
+
 $H_A$: The $k$ groups have a different shape and location.
 
-The alternative hypothesis can be directional or non-directional.  If a significant result is obtained then post hoc testing can be used to see where any differences lie. 
+The alternative hypothesis can be directional or non-directional.  If a significant result is obtained then post-hoc testing can be used to see where any differences lie. 
 
 \subsubsection{Method}
 
@@ -471,21 +476,21 @@ If the assumptions are met the test can be used in the following way:
 
 \begin{itemize}
 \item{1. Determine the null and alternative hypothesis and $\alpha$ the level of significance for the test.}
-\item{2. Rank the whole sample from lowest to highest.}
+\item{2. Rank all observations from lowest to highest.}
 \item{3. Calculate the sum of the ranks for each group.}
-\item{4. Calculate the average rank in each group, $R_i$, and the average rank for the whole sample,$R$ .}
+\item{4. Calculate the average rank in each group, $R_i$, and the overall average rank, $R$ .}
 \item{5. Calculate the test statistic $H$,
 \begin{equation}
 H = 12\frac{\sum n_i (R_i - R)^2}{N (N + 1)}
 \end{equation}
-where $n_i$ = the number of observations in group $i$
+where $n_i$ = the number of observations in group $i$,
 $N$ = the total sample size}
-\item{6. Compare this value with the $\chi^2$ distribution with $k–1$ degrees of freedom.  If the statistic is bigger than the critical value in the chi-square table, the result is significant.  If the result is significant, then pairwise post hoc test can be carried out.}
+\item{6. Compare this value with the $\chi^2$ distribution with $k-1$ degrees of freedom.  If the statistic is bigger than the critical value in the chi-square table, the result is significant.  If the result is significant, then pairwise post-hoc tests can be carried out.}
 \end{itemize}
 
 \subsubsection{Example}
 
-The data are the reduction in weekly headache activity for three treatment groups, expressed as a percentage of the baseline data (example from Altman \cite{altman}).
+The data are the reduction in weekly headache activity for three treatment groups, expressed as a percentage of the baseline data (example from Altman \cite{altman}). Note that we are assuming that the groups have a similar distribution as we are testing for a difference in medians. 
 
 <<echo=FALSE,results='asis'>>=
 headache <- matrix(c(62,74,86,74,91,37, 69,43,100,94,100,98, 50,-120,100,-288,4,-76), ncol=3)
@@ -503,14 +508,15 @@ $H_A$: At least one sample comes from a population with a different median.
 
 Computing the ranks then gives the following table:
 
+
 <<echo=FALSE,results='asis'>>=
 N <- length(headache)
 ranks <- matrix(rank(headache),ncol=3)
-head.data <- data.frame("Relaxation / response feedback"=headache[,1], "Rank"=ranks[,1], "Relaxation alone"=headache[,2], "Rank" = ranks[,2], "Untreated" = headache[,3], "Rank"=ranks[,3])
+head.data <- data.frame("Relaxation/response feedback"=headache[,1], "Rank"=ranks[,1], "Relaxation alone"=headache[,2], "Rank" = ranks[,2], "Untreated" = headache[,3], "Rank"=ranks[,3])
 head.data <- rbind(head.data, c(NA,colSums(ranks)[1], NA, colSums(ranks)[2],NA,colSums(ranks)[3]))
 head.data <- rbind(head.data, c(NA,colSums(ranks)[1]/nrow(headache), NA, colSums(ranks)[2]/nrow(headache),NA,colSums(ranks)[3]/nrow(headache)))
 head.data <- cbind(c(rep("", nrow(headache)),"Rank sum","(mean)"),head.data)
-colnames(head.data) <- c("","Relaxation / response feedback","Rank","Relaxation alone","Rank","Untreated","Rank")
+colnames(head.data) <- c("","Relaxation/response feedback","Rank","Relaxation alone","Rank","Untreated","Rank")
 rownames(head.data) <- NULL
 print(xtable(head.data),include.rownames = FALSE)
 
@@ -525,7 +531,7 @@ kt <- kruskal.test(value~key,data=headache.df)
 
 @
 
-We then have all the varaibles that we need in order to compute the test statistic
+We then have all the values that we need in order to compute the test statistic:
 
 $R = \frac{N +1}{2} =  \frac{\Sexpr{N} + 1}{2} = \Sexpr{(N+1)/2}$ 
 
@@ -537,18 +543,18 @@ However, $\chi^2_{2,0.05}=5.99,5.69<5.99$. Therefore there is not sufficient evi
 
 \subsubsection{Analysis in R}
 
-A quick boxplot of the raw data reveal that assumptions for a One-Way ANOVA (\ref{anova-assumptions}) are not satisfied and we need to take a non-parametric approach.
+A quick boxplot of the raw data reveal that the assumptions for One-Way ANOVA (\ref{anova-assumptions}) are not satisfied and we need to take a non-parametric approach.
 
 <<>>=
 headache <- matrix(c(62,74,86,74,91,37, 
                      69,43,100,94,100,98, 
                      50,-120,100,-288,4,-76), ncol=3)
 
-colnames(headache) <- c("Relaxation / response feedback","Relaxation alone","Untreated")
+colnames(headache) <- c("Relaxation/response feedback","Relaxation alone","Untreated")
 boxplot(headache)
 @
 
-To see how to compute the statistic in R, we first have to re-format into a more convenient format using the \Rcode{gather} function from the package \CRANpkg{tidyr} package (\ref{dataManip}). We can then use the \Rcode{kruskal.test} function, which applies the kruskal-wallis test.
+To see how to compute the statistic in R, we first have to structure the data in a more convenient format using the \Rcode{gather} function from the \CRANpkg{tidyr} package (\ref{dataManip}). We can then use the \Rcode{kruskal.test} function, which applies the Kruskal-Wallis test.
 
 <<>>=
 library(tidyr)
@@ -561,38 +567,40 @@ kt$statistic
 kt$p.value
 @
 
+\subsubsection{Presentation of Results}
+
+The results of the Kruskal-Wallis test could be reported in the following way:
+
+\begin{quote}
+The results of the Kruskal-Wallis test indicate that there was no evidence of differences in the reduction in weekly headache activity for three treatment groups (χ2k-w=5.69, p=0.051).
+\end{quote}
+
+\subsubsection{Advantages and Limitations}
+
+The Kruskal-Wallis test is very simple and easy to understand and use.  It does not require equal sample sizes between groups.  It is one of the most popular non-parametric tests.  It is also one of the most powerful (i.e. it is very likely to reject the null hypothesis given that it is false) non-parametric tests for continuous data.
 
 
 \subsection{Friedman's test}
 
-The Friedman test extends the previously mentioned Wilcoxon signed ranks test to more than two repeated values at more than two time points.  Alternatively, to more than two matched groups where the individuals of each group are randomly assigned to a group.
+The Friedman test extends the previously mentioned Wilcoxon signed ranks test to more than two repeated values at more than two time points.  Alternatively, to more than two matched blocks where the individuals of each block are randomly assigned to a group.
 
-The test examines the ranks at the different time points or matched pairs and tests whether the continuous underlying distribution of the variables is the same.  It is the non-parametric equivalent of the repeated measures ANOVA.
-
-\subsubsection{Examples from the literature}
-
-\begin{quote}
-The Friedman test is used by Kraemer et al in their paper: “Time-of-day variations of indicators of attention: performance, physiologic parameters, and self-assessment of sleepiness” (Biol Psychiatry 2000 Dec 1; 48(11):1069-80).  The objective of this study was to analyse time-of-day variations of different indicators of attention and their interrelations.  Time-of-day variations were tested non-parametrically with Friedman's test for repeated measurements.
-\end{quote}
-
-\begin{quote}
-Gustafson et al also use the Friedman test in their paper: “Effects of 4 hand-drying methods for removing bacteria from washed hands: a randomised trial” (Mayo Clin Proc 2000 Jul; 75(7): 705-8).  The objective of this study was to evaluate the effects of 4 different drying methods to remove bacteria from washed hands.  The Friedman test was used to show that there was no significant difference in the efficiency of the four methods at removing bacteria. 
-\end{quote}
-
+The test examines the ranks at the different time points or in matched blocks and tests whether the continuous underlying distribution of the variables is the same.  It is the non-parametric equivalent of the repeated measures ANOVA.
 
 \subsubsection{Null Hypothesis}
 
 $H_0$: There is no difference in median between the groups being tested.
+
 $H_A$: There is at least one difference in median between the groups.
 
-This is a non-directional alternative hypothesis.  If the alternative hypothesis is to be directional a more powerful way of analysing the data would be to carry out planned comparisons, with the appropriate correction for multiple testing.  Alternatively, overall tests of significance followed by post hoc tests can be used.
+This is a non-directional alternative hypothesis.  If the alternative hypothesis is to be directional a more powerful way of analysing the data would be to carry out planned comparisons, with the appropriate correction for multiple testing.  Alternatively, overall tests of significance followed by post-hoc tests can be used.
+
 \subsubsection{Assumptions}
 
 \begin{itemize}
 
 \item{1. The data to be analysed are continuous and at least at the ordinal level of measurement.}
 \item{2. The data from a randomly selected sample are either multiple observations from a single sample across more than two time periods or conditions.  Otherwise, the data are blocks of matched subjects in which the subjects from a given block are each randomly assigned to one of the three or more conditions.}
-\item{3. The subjects or blocks of subjects are independent; that is, the results within one block do not have an influence on the results within the other blocks}
+\item{3. The subjects or blocks of subjects are independent; that is, the results within one block do not have an influence on the results within the other blocks.}
 \end{itemize}
 
 \subsubsection{Method}
@@ -601,7 +609,7 @@ This is a non-directional alternative hypothesis.  If the alternative hypothesis
 \begin{itemize}
 \item{1. Construct the null and alternative hypotheses.}
 \item{2. Construct a two-way table with N (the number of subjects or matched sets of subjects) rows and k (the number of conditions or data collection periods) columns.}
-\item{3. Rank each persons' score from lowest to highest and sum ranks in each column.}
+\item{3. Rank each person's scores from lowest to highest and sum ranks in each column.}
 \item{4. If the null hypothesis is not true then the sum of the columns will vary from column to column.  The Friedman test examines the extent to which these column sums vary from what is expected using the following formula:
 \begin{equation}
 F_r = \frac{12}{Nk(k+1)}\sum_j R^2_j - 3N(k+1)
@@ -613,7 +621,7 @@ where:
 	$k$ = the number of periods or conditions.
 	}
 \item{5. Look $F_r$ up in tables of Friedman’s distribution.}	
-\item{6. Reject the null hypothesis in favour of the alternative hypothesis if the Fr value is greater than (or equal to) the value in the tables.}
+\item{6. Reject the null hypothesis in favour of the alternative hypothesis if the $F_r$ value is greater than (or equal to) the value in the tables.}
 \end{itemize}
 Note: If $N$ and $k$ are sufficiently large, then $F_r$ can be compared to a $\chi^2$ distribution on $k-1$ degrees of freedom.
 
@@ -665,7 +673,7 @@ $F_r = \frac{12}{\Sexpr{N} \times \Sexpr{k}(\Sexpr{k} + 1)}[\Sexpr{R1}^2 + [\Sex
 As \Sexpr{fr$statistic} is the same as the value in the Friedman's distribution table there is sufficient evidence to reject the null hypothesis and conclude that at least one group is different from the others.
 
 \subsubsection{Analysis in R}
-We create a data frame representation in R, and produce the boxplot:-
+We create a data frame representation in R, and produce the boxplots:-
 
 <<>>=
 rubinPeters <- data.frame(Person = 1:4, 
@@ -683,21 +691,21 @@ fr
 @
 
 \subsubsection{Post-hoc testing}
-If the Friedman test shows that there is a difference in medians in the groups it is possible to carry out post hoc testing to see which groups there is actually a difference between.  This is done by comparing average ranks in all the pairs or comparing to baseline.  The null hypothesis that there is no difference in mean ranks between the pairs will be rejected if the absolute value of these differences is greater than a specified critical value.  If the following condition holds, the null hypothesis will be rejected:
+If the Friedman test shows that there is a difference in medians between the groups it is possible to carry out post-hoc testing to see which groups there is actually a difference between.  This is done by comparing average ranks in all the pairs or comparing to baseline.  The null hypothesis that there is no difference in mean ranks between the pairs, will be rejected if the absolute value of these differences is greater than a specified critical value.  If the following condition holds, the null hypothesis will be rejected:
 
 \begin{equation}
 |\bar{R_i} - \bar{R_j}| \geq Z_\alpha/[k(k-1)] \sqrt{\frac{k(k+1)}{6N}}
 \end{equation}
 
 where;
-$R_i$ = the mean rank in period or condition $i$
-$R_j$ = the mean rank in period or condtion $j$
-$Z_\alpha$ = the critical $z$ value for $\alpha'$
-$\alpha'$ = $\alpha/[k(k-1)]$
-$k$ = the number of periods or conditions
-$N$ = the number of subjects
+$R_i$ = the mean rank in period or condition $i$,
+$R_j$ = the mean rank in period or condtion $j$,
+$Z_\alpha$ = the critical $z$ value for $\alpha'$,
+$\alpha'$ = $\alpha/[k(k-1)]$,
+$k$ = the number of periods or conditions,
+$N$ = the number of subjects.
 
-In the example above, the average ranks for the three time points are 3, 1.25 and 1.75.  Since k= 3 and $\alpha=0.05$ critical value of the z-statistic is a z for which $\alpha'$ = 0.05 / 3(2) = 0.0083.  Looking this value up in the normal tables gives z = 2.39.  The critical value 
+In the example above, the average ranks for the three time points are 3, 1.25 and 1.75.  Since $k$= 3 and $\alpha=0.05$ the critical value of the $z$-statistic is a $z$ for which $\alpha'$ = 0.05 / 3(2) = 0.0083.  Looking this value up in the tables for the Normal distribution gives $z$ = 2.39.  The critical value therefore, is: 
 
 $2.39 \sqrt{\frac{3(4)}{6(4)}} = 1.68$
 
@@ -710,9 +718,9 @@ $|\bar{R_1} - \bar{R_3}| = |3 - 1.75| = 1.25 < 1.68$
 $|\bar{R_2} - \bar{R_3}| = |1.25 - 1.75| = 0.5 < 1.68$
 
 
-The comparison between before treatment and 48 hours after treatment is the only one that is greater than the critical value of 1.68.  Therefore, we can conclude that according to the post hoc approach, hydralazine only relieves high blood pressure in the lungs 48 hours after the treatment.  This effect was not maintained 6 months after treatment.
+The comparison between before treatment and 48 hours after treatment is the only one that is greater than the critical value of 1.68.  Therefore, we can conclude that according to the post-hoc approach, hydralazine only relieves high blood pressure in the lungs 48 hours after the treatment.  This effect was not maintained 6 months after treatment.
 
-It is also possible to use the Wilcoxon ranked sign tests for post hoc testing.  The procedure is carried out in the same way as described before.  However, the Bonferroni correction must be applied to allow for multiple testing.  That is the critical value of $\alpha$ becomes $\alpha'=\alpha/k$ where k is the number of tests to be carried out and $\alpha$ is the original significance level.  The value of $\alpha'$ is the one looked at in the table or that the output p-value is compared against.
+It is also possible to use the Wilcoxon ranked sign tests for post-hoc testing.  The procedure is carried out in the same way as described before.  However, the Bonferroni correction must be applied to allow for multiple testing.  That is the critical value of $\alpha$ becomes $\alpha'=\alpha/k$ where $k$ is the number of tests to be carried out and $\alpha$ is the original significance level.  The value of $\alpha'$ is the one looked at in the table or that the output $p$-value is compared against.
 
 \subsubsection{Presentation of the Results}
 
@@ -721,26 +729,26 @@ The results of the Friedman test could be reported in the following way:
 \begin{quote}
 The results of the Friedman test indicate that there is a significant difference in median total pulmonary resistance across the three time periods.  Therefore, we can conclude that hydralazine alters total pulmonary resistance (p=0.042).  
 
-Post hoc analyses with the adjustment of the two-tailed level to 0.0083 indicated that there were decreases in total pulmonary resistance from before treatment (Md=17.0) to 48 hours after treatment (Md= 7.4).  No other significant differences were found.
+Post-hoc analyses with the adjustment of the two-tailed level to 0.0083 indicated that there were decreases in total pulmonary resistance from before treatment (Md=17.0) to 48 hours after treatment (Md= 7.4).  There was no evidence of other differences. 
 \end{quote}
 
-\textbf{Note:} That post hoc testing was carried out here on a very small sample size as an illustration, in reality post hoc testing would not be carried out on such a small sample size.
+\textbf{Note:} That post-hoc testing was carried out here on a very small sample size as an illustration, in reality post-hoc testing would not be carried out on such a small sample size.
 
 \subsubsection{Advantages and Limitations}
 
-The Friedman test is very versatile and can be used with randomised block designs and multiple observations of a single sample.  It is useful when the dependent variable is skewed.
+The Friedman test is very versatile and can be used with randomised block designs and multiple observations of a single sample.  It is useful when the dependent variable is not consistent with a normal distribution.
 
 There are some drawbacks however, it is possible for the medians not to change and there still to be significant differences between groups.  Although it is often referred to as the Friedman two-way ANOVA by ranks, it is restricted to within group comparisons.  It is not possible to test between group comparisons.  This is a major disadvantage in clinical research as it is not possible to make experimental-control group comparisons.  Each group can be analysed separately and compare their results.  However, it is not possible to test a group and time interaction with independent groups.
 
 \subsubsection{Summary}
 
-Friedman’s test, tests the null hypothesis that k related variables come from the same population.  For each case, the k variables are ranked from 1 to k; the test statistic is based on these ranks.  
+Friedman's test, tests the null hypothesis that $k$ related groups come from the same population.  For each case, the $k$ observations are ranked from 1 to $k$; the test statistic is based on these ranks.  
 
-After establishing a difference between one of the variables, post hoc testing can be carried out to decide which of the variables are actually different.  An appropriate method for allowing for multiple testing must be carried out.
+After establishing a difference between one of the variables, post-hoc testing can be carried out to decide which of the groups are actually different.  An appropriate method for allowing for multiple testing must be carried out.
 
 \subsection{Median Test}
 \label{medianTest}
-Tests whether two or more independent samples are drawn from populations with the same median using the $\chi^2$ statistic.  It can be used when the assumptions of similarity of distributions for the Mann-Whitney U and Kruskal-Wallis (\ref{kruskalWallis}) tests are not met.
+Ths Median test tests whether two or more independent samples are drawn from populations with the same median using the $\chi^2$ statistic.  It can be used when the assumptions of similarity of distributions for the Mann-Whitney U and Kruskal-Wallis (\ref{kruskalWallis}) tests are not met.
 
 \subsubsection{Null Hypothesis}
 
@@ -752,9 +760,9 @@ $H_A$: There is at least one difference in medians amongst the groups being stud
 The assumptions of the Median test are:
 
 \begin{itemize}
-\item{1. The dependent variable is at least at the ordinal level of measurement.  The data are from 2 or more groups}
+\item{1. The dependent variable is at least at the ordinal level of measurement.  The data are from two or more groups}
 \item{2. The groups are independent and a subject can only be in one of the groups.}
-\item{3. The assumptions of the $\chi^2$ test apply to the second half of the test.}
+\item{3. The assumptions of the $\chi^2$ test apply to the second half of the test (if these are not met then Fisher's exact test should be used.}
 \end{itemize}
 
 \subsubsection{Method}
@@ -765,7 +773,7 @@ If these assumptions are met then the test can be carried out in the following w
 \item{1. Construct the null and alternative hypotheses and decide on $\alpha$ the level of significance for the test.}
 \item{2. Treat the data as a single sample and calculate the overall median.}
 \item{3. Separate the data into the various groups and classify the observations in each group as either above, below or equal to the overall median.  Calculate the number above and below or equal to the median, in each group.}
-\item{4. Arrange these values into a $2\times c$ contingency table, where the two rows are: > or ≤ to the overall median.  The $c$ columns are the groups.}
+\item{4. Arrange these values into a $2\times c$ contingency table, where the two rows are: \> or \<= to the overall median.  The $c$ columns are the groups.}
 \item{5. Calculate the $\chi^2$ statistic for the table, if the assumptions hold. }
 \item{6. Compare the value of the chi-square statistic with the value in the tables on ($c-1$) degrees of freedom (where $c$ is the number of groups) at the pre-specified level of $\alpha$}
 \item{7. Reject the null hypothesis of equal medians if $X^2$ exceeds the critical value of the $\chi^2$ distributions.}
@@ -840,11 +848,11 @@ $ = 0.667 + 0.167 + 0.167 + 0.8 + 0.2 + 0.2 = 2.20 $
 
 8. As this result is not significant, post-hoc testing could not be carried out as there are no significant differences between the groups.
 
-The Median test has is very straightforward and easy to apply and is particularly useful when the exact values of the scores (especially those at the extremes) are unknown.  The test only considers two states for the scores, above and below (or equal to) the median and does not take the size of the differences into account.  Therefore, the Median test is less powerful than the Mann-Whitney U and Kruskal-Wallis tests.
+The Median test is very straightforward and easy to apply and is particularly useful when the exact values of the scores (especially those at the extremes) are unknown.  The test only considers two states for the scores, above and below (or equal to) the median and does not take the size of the differences into account.  Therefore, the Median test is less powerful than the Mann-Whitney U and Kruskal-Wallis tests.
 
 \subsubsection{Analysis in R}
 
-The median test is implemented in the \CRANpkg{RVAideMemoire} package (\ref{installPackages}). As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate p-value.
+The Median test is implemented in the \CRANpkg{RVAideMemoire} package (\ref{installPackages}). As usual we need to 'tidy' the input data frame (\ref{dataManip}) in order to define a factor for the test. The \Rfunction{mood.medtest} function implements the test and has the option to compute an exact, or approximate $p$-value.
 <<>>=
 library(RVAideMemoire)
 
@@ -863,11 +871,12 @@ mood.medtest(value~key,data=mmse)
 
 \subsection{Jonckheere-Terpstra Test}
 
-Also known as the \textit{test for ordered alternatives} or a \textit{nonparametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test (\ref{kruskalWallis}) is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test (\ref{kruskalWallis}) when the groups are ordered.  
+Also known as the \textit{test for ordered alternatives} or a \textit{non-parametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test (\ref{kruskalWallis}) is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test (\ref{kruskalWallis}) when the groups are ordered.  
 
 \subsubsection{Null Hypothesis}
 
 $H_0$: There is no difference in median values between the groups.  
+
 $H_A$: The median values of the groups increase in a specific predetermined sequence.  
 
 \subsubsection{Assumptions}
@@ -887,14 +896,14 @@ $H_A$: The median values of the groups increase in a specific predetermined sequ
 \item{3. Cast the data into a two-way table with the groups in the pre-specified order, arranged from smallest to largest.}
 \item{4. Within each group order the data from smallest to largest. }
 \item{5. Count the total number of times each value in the first group precedes (is lower than) a value in the subsequent groups this is the precedent count for the group.}
-\item{6. Add ½ to each precedent count when a tie occurs between groups.}
+\item{6. Add 0.5 to each precedent count when a tie (equal value) occurs between groups.}
 \item{7. Find the precedent count for the remaining groups and sum over the groups to give $J$, the test statistic.}
 \item{8. Compare this value to that in the tables for $J$.  If the statistic is greater than or equal to the critical value in the Jonckheere-Terpstra test tables, the result is significant.  If the result is significant, the null hypothesis is rejected in favour of the alternative hypothesis.}
 \end{itemize}
 
 \subsubsection{Large Sample Size}
 
-1. When the sample size is large the distribution of J tends to a normal distribution, with mean:-
+1. When the sample size is large the distribution of $J$ tends to a normal distribution, with mean:-
 
 \begin{equation}
 \mu_j = \frac{N^2 - \sum_{j=1}^kn^2_j}{4}
@@ -907,10 +916,13 @@ and standard deviation
 \end{equation}
 where,
 
-$N$ = total sample size
-$n_j$ = sample size of group $j$
-$k$ = number of groups
-$\sum$ = sum across groups
+$N$ = total sample size,
+
+$n_j$ = sample size of group $j$,
+
+$k$ = number of groups,
+
+$\sum$ = sum across groups,
 
 A $z$ statistic can then be calculated as follows:
 
@@ -918,7 +930,7 @@ A $z$ statistic can then be calculated as follows:
 z = \frac{J-\mu_j}{\sigma_j}
 \end{equation}
 
-This $z$ statistic can then be compared to the normal tables
+This $z$ statistic can then be compared to the tables for the normal distribution:
 
 
 \subsubsection{Example}
@@ -943,7 +955,7 @@ $\alpha=0.05$
 
 5. The precedent counts for each pair of groups is in the table below.  
 
-6. ½ has been added to each precedent count with a tie between groups.
+6. 0.5 has been added to each precedent count with a tied value between groups.
 
 <<echo=FALSE,results='asis'>>=
 pcounts <- data.frame(Grade1And2 = c(7,7,7,6,5.5,5,NA,"Total:37.5"),Grade1And3 = c(8,8,8,7,5.5,5,NA,41.5),Grade2And3 = c(8,5.5,5,5,5,5,5,38.5))
@@ -959,12 +971,12 @@ print(xtable(pcounts),include.rownames = FALSE)
 The results of the Jonckheere-Terpstra test could be reported in the following way:
 
 \begin{quote}
-The results of the Jonckheere-Terpstra test show that there is a trend for an increase in median Mcm-2 value as histological grade increases (J=117.5, p=0.003).
+The results of the Jonckheere-Terpstra test show that there is a trend for an increase in median Mcm-2 value as histological grade increases ($J$=117.5, p=0.003).
 \end{quote}
 
 \subsubsection{Analysis in R}
 
-Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed (\ref{installPackages}).
+Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed (\ref{installPackages}) (we recommend using this version of the test rather than versions in other packages).
 
 <<>>=
 library(clinfun)
@@ -980,18 +992,13 @@ jonckheere.test(grade$value,grade$key)
 
 \subsubsection{Advantages and limitations}
 
-The main advantage of the Jonckheere-Terpstra test is that unlike the Kruskal-Wallis test it allows the groups to have an order therefore it is more powerful than the Kruskal-Wallis test if the groups have a pre-specified order.  Since the Jonckheere-Terpstra test is a test for trend there is no need for post hoc tests to see where differences lie after a significant result. 
+The main advantage of the Jonckheere-Terpstra test is that unlike the Kruskal-Wallis test it allows the groups to have an order therefore it is more powerful than the Kruskal-Wallis test if the groups have a pre-specified order.  Since the Jonckheere-Terpstra test is a test for trend there is no need for post-hoc tests to see where differences lie after a significant result. 
 
 The main limitation of the test is that the groups must have a pre-specified or explicit order.  It is not possible to look for an order and then test for a trend.  If there is no explicit order then a Kruskal-Wallis test should be used instead. 
 
 \subsubsection{Summary}
 The Jonckheere-Terpstra test is a more powerful alternative to the Kruskal-Wallis test when there is an explicit order to the groups.  It is a test for trend of increasing medians between the groups.  It is a much under-used nonparametric test; often the Kruskal-Wallis test is used where it would have been more appropriate to use the Jonckheere-Terpstra test.
 
-\subsubsection{Summary of Several Independent Samples}
-
-In this section, five tests for use when the independent variable has more than two groups have been covered.  The Chi-Square test and the Mantel-Haenszel test are to be used when the dependent variable is categorical.  The Median and Kruskal-Wallis tests are to be used when the dependent variable is continuous but there is no order to the groups.  The Jonckheere-Terpstra test is more powerful if there is an order to the groups. 
-
-If the assumptions of the Kruskal-Wallis test (\ref{kruskalWallis}) are satisfied, it is more powerful to use this test than the Median Test (\ref{medianTest}).  That is the Kruskal-Wallis test (\ref{kruskalWallis}) is more likely to correctly reject the null hypothesis.  
 
 \section{Regression}
 
@@ -999,7 +1006,7 @@ If the assumptions of the Kruskal-Wallis test (\ref{kruskalWallis}) are satisfie
 
 Regression analysis is widely used for prediction, where the explanatory variables are known as \textbf{predictors} and the response variable is the thing that is being predicted.
 
-One way of working out whether regression is the appropriate analysis for your data is to consider the most natural way of plotting the data in order to address the question you are asking. An XY scatter plot would point to regression, whereas analysis of variance (ANOVA) might be more appropriate if a better representation of the data was in the form of a box and whiskers plot.
+One way of working out whether regression is the appropriate analysis for your data is to consider the most natural way of plotting the data in order to address the question you are asking. An XY scatter plot would point to regression, whereas analysis of variance (ANOVA) might be more appropriate if a better representation of the data was in the form of a boxplot.
 
 <<scatterplot, fig.lp="fig:", fig.cap="Growth rate of E. coli at various concentrations of lactoferrin.", fig.width=5, fig.height=5, fig.align='center', echo=FALSE>>=
 options(digits=3)
@@ -1017,10 +1024,7 @@ There are several types of regression analysis \textemdash\ which you use will d
 \item{\textbf{Polynomial regression} \textendash\ used to test for non-linearity in a relationship}
 \item{\textbf{Non-linear regression} \textendash\ to fit a specified non-linear model to the data}
 \item{\textbf{Non-parametric regression} \textendash\ used when there is no obvious functional form}
-\item{\textbf{Logistic regression} \textendash when the response variable is a nominal (or categorical) variable}
 \end{itemize}
-
-There are many other techniques that can be used when there are three or more measurement variables, including principal components analysis, hierarchical and non-hierarchical clustering, and multidimensional scaling.
 
 \subsection{Linear Regression}
 
@@ -1212,7 +1216,7 @@ options(digits=3)
 \centering
 \begin{tabular}{| l | c | c | c | c |}
 \hline
-\textbf{Source} & \textbf{Sum of squares} & \textbf{Degrees of freedom} & \textbf{Mean squares} & \textbf{$F$ ratio} \\
+\textbf{Source} & \textbf{Sum of squares} & \textbf{Degrees of freedom} & \textbf{Mean Squares} & \textbf{$F$ ratio} \\
 \hline
 Regression & $SSR = \Sexpr{SSR}$ & 1 & \Sexpr{SSR} & \Sexpr{F_ratio} \\
 \hline
@@ -1328,11 +1332,11 @@ Aside from the assumption that there is a linear relationship between the explan
 
 \begin{itemize}
 \item{\textbf{Constant variance (homoscedasticity)} \textendash\ the variance of the errors is constant across the range of values for the explanatory variable}
-\item{\textbf{Independence of errors} \textendash\ the errors in the response variables are uncorrelated with other}
+\item{\textbf{Independence of errors} \textendash\ the errors in the response variables are uncorrelated with each other}
 \item{\textbf{Normality of errors} \textendash\ the residuals follow a normal distribution}
 \end{itemize}
 
-Diagnostic plots for the model can be visualized using the \Rfunction{plot} function (Figure \ref{fig:lmfitdiag}). The first graph shows the residuals plotted against the fitted values; ideally these should look random without any structure or pattern in the plot. It would be a problem if there was a clear trend of increasing scatter as the fitted values get larger, i.e. violating the assumption of constant variance. The second plot, the quantile-quantile plot (Q-Q plot), is also worth looking at as this can highlight problems with non-normality of errors. If the errors are normally distributed this plot should be a straight line. An S-shaped or banana-shaped plot would indicate a need to fit a different model to the data.
+Diagnostic plots for the model can be visualized using the \Rfunction{plot} function (Figure \ref{fig:lmfitdiag}). The first graph shows the residuals plotted against the fitted values; ideally these should look random without any structure or pattern in the plot. It would be a problem if there was a clear trend of increasing scatter as the fitted values get larger, i.e. violating the assumption of constant variance. The second plot, the quantile-quantile plot (QQ plot), is also worth looking at as this can highlight problems with non-normality of errors. If the errors are normally distributed this plot should be a straight line. An S-shaped or banana-shaped plot would indicate a need to fit a different model or to transform the data.
 
 <<lmfitdiag, fig.lp="fig:", fig.cap="Diagnostic plots for checking the linear model fitted to the lactoferrin data.", fig.width=10, fig.height=10, fig.align='center'>>=
 par(mfrow=c(2,2))
@@ -1450,39 +1454,18 @@ where $x_1$, $x_2$, $x_3$, etc. are our explanatory variables. The R code for fi
 model <- lm(y ~ x1 + x2 + x3)
 @
 
-The quadratic function we fitted above to the radioactive decay data is an example of multiple linear regression.
+The quadratic function we fitted above to radioactive decay data is an example of multiple linear regression.
 
-Where there are multiple explanatory variables, interaction terms can be added to the model, for example
+TODO: example and pairs plot
 
-\begin{equation}
-y = a + bx_1 + cx_2 + dx_1x_2
-\end{equation}
+TODO: caution about overfitting, multicollinearity
 
-This is specified in R using the ':' symbol:
+TODO: interaction terms, forward/backward selection
 
-<<eval=FALSE>>=
-model <- lm(y ~ x1 + x2 + x1:x2)
-@
-
-or more succinctly:
-
-<<eval=FALSE>>=
-model <- lm(y ~ x1 * x2)
-@
-
-where the '*' symbol indicates inclusion of the explanatory variables and interactions, not multiplication.
-
-Care must be taken not to overfit when creating a multiple regression model for a dataset containing many explanatory variables, particularly if interactions terms are used in constructing the model.
-
-Models can be built up by starting from a simple model with few explanatory variables and adding additional explanatory variables, or we could simplify a very complicated model containing all explanatory variables and interaction terms by iteratively reducing non-signficant terms. These approaches are known as forward selection and backward selection respectively.
-
-Another assumption of multiple regression is that the explanatory variables are not multicollinear. Multicollinearity occurs when two independent variables are highly correlated with each other. If the goal of building the model is prediction, multicollinearity is not that important. However, if the goal is to understand the factors that cause the variation in the response variable, this can lead to some confusion. For example, our model may suggest that an explanatory variable is the leading cause of the variation in the response variable but in reality it is not causative but highly correlated with another explanatory variable that is the actual cause.
 
 \subsubsection{Using nominal variables in a multiple regression}
 
-Nominal (or categorical) variables can be used in multiple regression. For example, a multiple regression model that attempts to predict blood pressure from explanatory variables such as height, weight, age and the number of hours of exercise per week, might also include sex. In this case, we would create a variable in which every female has a value of 0 and every male a value of 1.
-
-Where there are multiple values of a nominal variable, or multiple categories, some care is required. The usual technique is to create $k - 1$ dummy variables, where $k$ is the number of values that the nominal variable can take. For example, if the blood pressure study included socio-economic status as a nominal variable with 5 values, we would create 4 dummy variables representing the first four statuses. For an observation in one of those 4 socio-economic classes, we would set the corresponding dummy variable to 1 and all others to 0. For an observation in the fifth class, we would set all dummy variables to 0.
+TODO
 
 \subsubsection{Non-linear models}
 
