@@ -358,7 +358,7 @@ plot(model)
 ## Radioactive decay data set
 
 ```{r echo=FALSE}
-data <- read.delim("decay.txt")
+data <- read.csv("decay.csv")
 plot(data, pch = 16)
 model <- lm(y ~ x, data = data)
 abline(model)
