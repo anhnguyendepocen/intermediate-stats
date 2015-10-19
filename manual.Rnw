@@ -1367,7 +1367,7 @@ y = a + bx + cx^2
 In R the model would be written \Rcode{y \textasciitilde x + I(x\textasciicircum 2)} where the \Rfunction{I} function is needed to treat the \Rcode{x\textasciicircum 2} term 'as is' (note that the \Rcode{\textasciicircum} symbol has a different meaning in the R syntax for specifying a model).
 
 <<decay, fig.lp="fig:", fig.cap="Radioactive decay data set.", fig.width=5, fig.height=5, fig.align='center', echo=FALSE>>=
-data <- read.delim("decay.txt")
+data <- read.csv("decay.csv")
 x <- data$x
 y <- data$y
 plot(x, y, pch=16, xlim=c(0, 33), ylim=c(0, 155))
