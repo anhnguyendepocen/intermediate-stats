@@ -1212,7 +1212,7 @@ options(digits=3)
 \centering
 \begin{tabular}{| l | c | c | c | c |}
 \hline
-\textbf{Source} & \textbf{Sum of squares} & \textbf{Degrees of freedom} & \textbf{Mean Squares} & \textbf{$F$ ratio} \\
+\textbf{Source} & \textbf{Sum of squares} & \textbf{Degrees of freedom} & \textbf{Mean squares} & \textbf{$F$ ratio} \\
 \hline
 Regression & $SSR = \Sexpr{SSR}$ & 1 & \Sexpr{SSR} & \Sexpr{F_ratio} \\
 \hline
