@@ -773,7 +773,7 @@ If these assumptions are met then the test can be carried out in the following w
 \item{1. Construct the null and alternative hypotheses and decide on $\alpha$ the level of significance for the test.}
 \item{2. Treat the data as a single sample and calculate the overall median.}
 \item{3. Separate the data into the various groups and classify the observations in each group as either above, below or equal to the overall median.  Calculate the number above and below or equal to the median, in each group.}
-\item{4. Arrange these values into a $2\times c$ contingency table, where the two rows are: \> or \<= to the overall median.  The $c$ columns are the groups.}
+\item{4. Arrange these values into a $2\times c$ contingency table, where the two rows are: $\>$ or $\leq$ to the overall median.  The $c$ columns are the groups.}
 \item{5. Calculate the $\chi^2$ statistic for the table, if the assumptions hold. }
 \item{6. Compare the value of the chi-square statistic with the value in the tables on ($c-1$) degrees of freedom (where $c$ is the number of groups) at the pre-specified level of $\alpha$}
 \item{7. Reject the null hypothesis of equal medians if $X^2$ exceeds the critical value of the $\chi^2$ distributions.}
