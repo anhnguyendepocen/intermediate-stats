@@ -7,6 +7,16 @@ header-includes:
      - \usepackage{longtable}
 ---
 
+## Outline
+
+- What is regression analysis and what can you use it for?
+
+- Linear regression (some theory!)
+
+- Fitting linear models in R
+
+- Non-linear relationships
+
 ## Regression analysis
 
 - Statistical methods for modelling the relationship between 2 or more variables
@@ -21,6 +31,9 @@ header-includes:
 
 1. Understanding the functional relationships between the dependent variable and the independent variables
 
+```
+```
+
 2. Predicting or estimating the unknown value of the dependent variable for given values of the independent variables
 
 ## Is regression analysis appropriate for your data?
@@ -30,6 +43,9 @@ What is the most natural way of plotting your data?
 - XY scatter plot $\Rightarrow$ regression
 
 - Box plot $\Rightarrow$ ANOVA, $t$-test or non-parametric equivalent
+
+```
+```
 
 Have you obtained measurements of some quantity at various conditions?
 
@@ -129,17 +145,20 @@ $$\varepsilon_i \sim \mathcal{N}(0, \sigma^2)$$
 
 $$SSE = \sum_i\varepsilon_i^2 = \sum_i(y_i - a - bx_i)^2$$
 
+```
+```
+
 Mathematically, we set the derivative of this function with respect to the slope to zero ($dSSE/db = 0$), do the same for the derivative with respect to the intercept ($dSSE/da = 0$), and then solve the resulting simultaneous equations.
 
 ## Linear regression in R
 
 - The tilde symbol, $\sim$, is used in describing a model in R
 
-- We describe the linear relationship between growth rate and concentration as
-
 $$growth \sim conc$$
 
 - This can be read as 'growth is modelled as a function of concentration'
+
+- Use the ```lm``` function to build the linear model
 
 ## Reading the data in R
 
@@ -248,7 +267,7 @@ F_ratio <- SSR / error_variance
 \centering
 \begin{tabular}{| l | l | c | c | c |}
 \hline
-\textbf{Source} & \textbf{Sum of squares} & \textbf{d.f.} & \textbf{Mean Squares} & \textbf{$F$ ratio} \\
+\textbf{Source} & \textbf{Sum of squares} & \textbf{d.f.} & \textbf{Mean squares} & \textbf{$F$ ratio} \\
 \hline
 Regression & $SSR = `r SSR`$ & 1 & `r SSR` & `r F_ratio` \\
 \hline
