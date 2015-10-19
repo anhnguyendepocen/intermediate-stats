@@ -19,7 +19,7 @@ header-includes:
 
 ## Regression analysis
 
-- Statistical methods for modelling the relationship between 2 or more variables
+- Statistical method for modelling the relationship between 2 or more variables
 
 - One of the variables is the **response** (or **dependent**) variable
 
@@ -53,7 +53,7 @@ Have you obtained measurements of some quantity at various conditions?
 
 - Dose-response experiment where an \textit{E. coli} strain was exposed to various concentrations of the growth inhibitor, lactoferrin
 
-```{r echo=FALSE, fig.width=8}
+```{r echo=FALSE}
 data <- read.csv("lactoferrin.csv")
 plot(data, pch = 16)
 ```
@@ -105,7 +105,7 @@ $$y = ax + b$$
 
 ## Straight line fit for the lactoferrin data set
 
-```{r echo=FALSE, fig.width=8}
+```{r echo=FALSE}
 data <- read.csv("lactoferrin.csv")
 plot(data, pch = 16)
 model <- lm(growth ~ conc, data = data)
@@ -328,7 +328,7 @@ SSR / SSY
 ```
 -->
 
-## Measuring the degree of fit
+## Correlation coefficient
 
 ```{r}
 cor.test(data$growth, data$conc)
