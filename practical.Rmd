@@ -65,9 +65,9 @@ beeswarm(folate~treatmnt,data=amess,add=TRUE,pch=16)
 
 
 ```{r}
-t.test(folate~ treatmnt,data=amess[amess$treatmnt !=3,])
-t.test(folate~treatmnt,data=amess[amess$treatmnt !=2,])
-t.test(folate~treatmnt,data=amess[amess$treatmnt !=3,])
+t.test(folate~ treatmnt,data=amess[amess$treatmnt !=3,],var.equal=TRUE)
+t.test(folate~treatmnt,data=amess[amess$treatmnt !=2,],var.equal=TRUE)
+t.test(folate~treatmnt,data=amess[amess$treatmnt !=1,],var.equal=TRUE)
 ```
 
 
@@ -86,26 +86,11 @@ summary(aov(mod))
 
 ```{r}
 subset <- amess[amess$treatmnt != 3,]
-t.test(folate~treatmnt,data=subset)
+summary(aov(folate~treatmnt,data=subset))
 ```
 
 
-6. If the assumptions for ANOVA don’t hold, then there are non-parametric alternatives available. 
-
-    + If the assumption of normality doesn’t hold then we might look at the Kruskal-Wallis test. 
-    + If the assumption of equal variances doesn’t hold then we might use the median test.
-
-Perform these tests. Do they give the same answer as ANOVA? If not, why not? How important were the assumptions?
-
-
-```{r}
-kruskal.test(folate~factor(treatmnt),data=amess)
-
-library(RVAideMemoire)
-mood.medtest(folate~factor(treatmnt),data=amess)
-```
-
-7. Use a *post-hoc* test to compute p-value for all pairwise contrasts. Unlike the t-tests performed in Question 3, the p-values returned here are adjusted for multiple testing. Two functions for doing such tests in R are `TukeyHSD` and `pairwise.t.test`. Help for both these functions is available through RStudio; `?TukeyHSD`, `?pairwise.t.test`
+6. Use a *post-hoc* test to compute p-value for all pairwise contrasts. Unlike the t-tests performed in Question 3, the p-values returned here are adjusted for multiple testing. Two functions for doing such tests in R are `TukeyHSD` and `pairwise.t.test`. Help for both these functions is available through RStudio; `?TukeyHSD`, `?pairwise.t.test`
 
 
 ```{r}
@@ -117,12 +102,36 @@ TukeyHSD(mod)
 pairwise.t.test(amess$folate,amess$treatmnt)
 ```
 
+# Non-Parametric tests
 
-# Other Non-Parametric tests
+
+
+```{r}
+amess <- read.csv("amess.csv")
+```
+
+
+1. If the assumptions for ANOVA don’t hold, then there are non-parametric alternatives available. 
+
+    + If the assumption of normality doesn’t hold then we might look at the *Kruskal-Wallis* test. 
+    + If the assumption of equal variances doesn’t hold then we might use the *median test*.
+
+Perform these tests on the `amess` dataset. Do they give the same answer as ANOVA? If not, why not? How important were the assumptions?
+
+
+```{r}
+kruskal.test(folate~factor(treatmnt),data=amess)
+
+library(RVAideMemoire)
+mood.medtest(folate~factor(treatmnt),data=amess)
+```
+
+
+
 
 The file `treatments.txt` records measurements from five subjects undergoing a treatment course. The data were taken from an example in *GraphPad Prism*.
 
-1. Import these data into R and visualise the distribution of the data
+2. Import these data into R and visualise the distribution of the data
 
 ```{r}
 treatments <- read.delim("treatments.txt")
@@ -130,7 +139,7 @@ head(treatments)
 ```
 
 
-2. Use the Friedman test to assess the effect of treatment and interpret the result. Can you justify why this test was chosen?
+3. Use the Friedman test to assess the effect of treatment and interpret the result. Can you justify why this test was chosen?
 
 ```{r}
 boxplot(treatments[,-1])
@@ -154,7 +163,7 @@ if(!file.exists("genotypes.txt")){
 
 The file `genotypes.txt` contains measurements from patients in a gene expression study. For each patient in the study, their genotype for a particular gene was recorded. 
 
-3. Import the file `genotypes.txt` into R and visualise the data using a boxplot
+4. Import the file `genotypes.txt` into R and visualise the data using a boxplot
 
 ```{r}
 gtypes <- read.delim("genotypes.txt")
@@ -164,7 +173,7 @@ boxplot(gtypes)
 
 ***NOTE: The boxplot function is also able to accept a data frame as input. In this case, it will plot the distribution of data in each column separately***
 
-4. Transform the data into two columns; one to indicate the genotype of the individual and the second for the gene expression level. 
+5. Transform the data into two columns; one to indicate the genotype of the individual and the second for the gene expression level. 
 
 
 ```{r}
@@ -173,7 +182,7 @@ gtypes <- gather(gtypes)
 gtypes$key <- rep(c(1,2,3),each=7)
 ```
 
-5. Use an appropriate method to test the association between gene expression and genotype
+6. Use an appropriate method to test the association between gene expression and genotype
 
 ```{r}
 library(clinfun)
