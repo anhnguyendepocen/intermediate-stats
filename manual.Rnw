@@ -23,6 +23,15 @@ BiocStyle::latex()
 @
 \usepackage{ifthen} 
 \usepackage{xcolor,colortbl}
+\usepackage[T1]{fontenc}
+\usepackage{authblk}
+\usepackage{tabularx}
+\usepackage{array}
+ \usepackage{graphicx}
+ \usepackage{url}
+\usepackage{multirow}
+\usepackage{lscape}
+\usepackage{tabulary}
 \newboolean{includethis} 
 \setboolean{includethis}{true}
 
@@ -581,7 +590,7 @@ The Kruskal-Wallis test is very simple and easy to understand and use.  It does 
 
 
 \subsection{Friedman's test}
-
+\label{friedman}
 The Friedman test extends the previously mentioned Wilcoxon signed ranks test to more than two repeated values at more than two time points.  Alternatively, to more than two matched blocks where the individuals of each block are randomly assigned to a group.
 
 The test examines the ranks at the different time points or in matched blocks and tests whether the continuous underlying distribution of the variables is the same.  It is the non-parametric equivalent of the repeated measures ANOVA.
@@ -870,8 +879,8 @@ mood.medtest(value~key,data=mmse)
 
 
 \subsection{Jonckheere-Terpstra Test}
-
-Also known as the \textit{test for ordered alternatives} or a \textit{non-parametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test (\ref{kruskalWallis}) is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test (\ref{kruskalWallis}) when the groups are ordered.  
+\label{jt-test}
+Also known as the \textit{test for ordered alternatives} or a \textit{non-parametric test for trend}.  The Jonckheere-Terpstra test is used when the assumption that the independent variable is nominal in the Kruskal-Wallis test (\ref{kruskalWallis}) is violated i.e. the groups have an explicit order.  Since it allows the independent variable (the groups) to have an order it is more powerful than the Kruskal-Wallis test (Section \ref{kruskalWallis}) when the groups are ordered.  
 
 \subsubsection{Null Hypothesis}
 
@@ -976,7 +985,7 @@ The results of the Jonckheere-Terpstra test show that there is a trend for an in
 
 \subsubsection{Analysis in R}
 
-Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed (\ref{installPackages}) (we recommend using this version of the test rather than versions in other packages).
+Performing the Jonckheere-Terpstra test in R requires the \CRANpkg{clinfun} package to be installed (Section \ref{installPackages}) (we recommend using this version of the test rather than versions in other packages).
 
 <<>>=
 library(clinfun)
@@ -1501,6 +1510,52 @@ model <- nls(y ~ a - b * exp(-c * x), start = list(a = 50, b = 100, c = 0.05))
 @
 
 This is beyond the scope of what is covered in this introduction to regression analysis; see \cite{crawley:statsr} for more details.
+
+
+
+\begin{landscape}
+
+\begin{table}[!htb]
+\caption{Which test to use?}
+\vspace{0.6cm}
+%\begin{center}
+%\begin{tabular}{p{2cm}|p{2cm}p{2cm} p{2cm}|p{2cm} }
+\begin{tabular}{c|c|c|c|c}
+\hline
+\multicolumn{2}{c}{\bf Groups} & \multicolumn{3}{|c}{ \bf Variable} \\  \hline
+% \multicolumn{2}{c} {\bf /Independent} & \multicolumn{3}{|c}{ \bf } \\  \hline 
+\bf N.  & {\bf Independent }  &  {\bf Nominal or } &  {\bf Ordered categorical or} & {\bf Continuous and } \\  
+\bf  samples  & {\bf (unpaired) Y/N }  &  {\bf  categorical} &  { \bf continuous and non normal} & {\bf normally distributed} \\  \hline
+  % \multicolumn{2}{|} {} & \multicolumn{1}{|}{categorical} & \multicolumn{1}{|}{ continuous and non normal} & \multicolumn{1}{|}{normally distributed} \\  \hline 
+One   &  N/A & Sign test  & Sign test & t-test  \\
+ sample  &   & (binom.test) & (binom test) & (t.test)\\ 
+ &    &  $\chi^2$   test   &  Kolmogorov-Smirnov test &   \\
+   &    & (chisq.test)  & (ks.test)    & \\ \hline \hline
+ Two  & Yes  & $\chi^2$ test(2xK)&Mann Whitney rank sum test &Unpaired t-test  \\
+sample &&(chisq.test)&(wilcox.test)& (t.test)\\ 
+&&Fishers exact test&Median test\\ 
+&&(fisher.test)&(chisq.test)&  \\ \cline{2-5}
+ &No&McNemars test&Wilcoxon signed rank test&Paired t-test \\
+ &&(McNemar.test)&(Wilcox.test)&   (t.test) \\  
+ & & & Sign test & \\
+  & & & (binom.test) & \\
+  \hline \hline
+Multiple&Yes&$\chi^2 $(r x k) &Kruskal-Wallis (Section \ref{kruskalWallis}) &Analysis of variance (ANOVA) (Section \ref{oneWayAnova}) \\
+Samples & &(chisq.test)& (kruskal.test) & (Aov) \\
+((k>2)  &&&Median test (Section \ref{medianTest}) &\\
+&&& (chisq.test)&\\
+& Yes  (ordered) & & & Jonckheere-Terpstra (trend) test (Section \ref {jt-test})\\ 
+& & & & (jonckheere.test  ) \\ \cline{2-5}
+&No&Cochran Q-test &Friedman test (Section \ref{friedman}) &Repeated measures ANOVA \\
+&&(not covered in course)&(friedman.test)& (aov) \\  \hline 
+% \multicolumn{2}{c}{\bf Association between two variables} & contingency coefficient & Spearman's rank correlation & Pearson's product moment correlation \\
+% (not covered in course)
+\hline
+\end{tabular}
+\label{load level}
+%\end{center}
+\end{table}
+\end{landscape}
 
 
 \bibliography{stats}
